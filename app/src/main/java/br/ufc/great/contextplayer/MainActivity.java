@@ -7,23 +7,35 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.security.Permissions;
 import java.util.ArrayList;
 
 import br.ufc.great.contextplayer.model.Song;
+import br.ufc.great.contextplayer.views.SongViewRecyclerAdapter;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     MusicScanner scanner;
     ArrayList<Song> songs;
+
+
+
+    RecyclerView mRecyclerView;
+    SongViewRecyclerAdapter mAdapter;
+    private LinearLayoutManager mLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        songs = new ArrayList<>();
 
         scanner = new MusicScanner(this);
         String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
@@ -33,11 +45,14 @@ public class MainActivity extends AppCompatActivity {
             }
             else{
                 songs = (ArrayList<Song>) scanner.scan();
+
             }
 
         } else {
             songs = (ArrayList<Song>) scanner.scan();
         }
+        configuraRecycler();
+        mAdapter.notifyDataSetChanged();
 
         for(Song song: songs){
             Log.d(TAG, "onCreate: " + song.toString());
@@ -45,6 +60,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void configuraRecycler(){
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mAdapter = new SongViewRecyclerAdapter(songs);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
