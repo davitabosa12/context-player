@@ -38,16 +38,33 @@ public class MusicScanner {
         cursorExternal = cr.query(externalUri, null, selection, null, sortOrder);
         Log.d(TAG, "scan: scanning internal");
         cursorInternal = cr.query(internalUri, null, selection, null, sortOrder);
+        cursorExternal.moveToFirst();
+        cursorInternal.moveToFirst();
         while(!cursorExternal.isAfterLast()){
             Song song = Song.fromCursor(cursorExternal);
             Log.d(TAG, song.toString());
             songList.add(song);
+            cursorExternal.moveToNext();
         }
         while(!cursorInternal.isAfterLast()){
-            Song song = Song.fromCursor(cursorExternal);
+            Song song = Song.fromCursor(cursorInternal);
             Log.d(TAG, song.toString());
             songList.add(song);
+            cursorInternal.moveToNext();
         }
+        songList = (ArrayList<Song>) cleanSonglist(songList);
         return songList;
+    }
+
+    //remove music from album ui and Whatsapp audio
+    private List<Song> cleanSonglist(ArrayList<Song> songList) {
+        ArrayList<Song> newSongList = new ArrayList<>();
+        for (Song s : songList) {
+            if (s.getAlbum().equals("ui") || s.getAlbum().equalsIgnoreCase("Whatsapp Audio")) {
+                continue;
+            }
+            newSongList.add(s);
+        }
+        return newSongList;
     }
 }

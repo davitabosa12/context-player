@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.security.Permissions;
@@ -34,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
                 songs = (ArrayList<Song>) scanner.scan();
             }
 
+        } else {
+            songs = (ArrayList<Song>) scanner.scan();
+        }
+
+        for(Song song: songs){
+            Log.d(TAG, "onCreate: " + song.toString());
         }
 
 
