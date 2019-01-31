@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ContextPlayer.iml" filepath="$PROJECT_DIR$/ContextPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/context-player.iml" filepath="$PROJECT_DIR$/context-player.iml" />
     </modules>
   </component>
 </project>
