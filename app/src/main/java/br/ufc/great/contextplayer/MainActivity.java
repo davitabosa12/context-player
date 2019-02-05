@@ -83,9 +83,10 @@ public class MainActivity extends AppCompatActivity {
 
                     Toast.makeText(getApplicationContext(), songView.getSong().toString(), Toast.LENGTH_SHORT).show();
                     currentPlaylist.clear();
-                    currentPlaylist.add(songView.getSong());
+                    currentPlaylist.addAll(songs);
+
                     musicService.addPlaylist(currentPlaylist);
-                    musicService.setSong(0);
+                    musicService.setSong(currentPlaylist.indexOf(songView.getSong()));
                     musicService.playSong();
                 } else {
                     Log.e(TAG, "onClick: v is not an instance of SongView.", new ClassCastException());
