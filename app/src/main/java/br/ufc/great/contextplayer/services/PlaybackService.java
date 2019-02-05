@@ -102,6 +102,11 @@ public class PlaybackService extends Service
     public void onPrepared(MediaPlayer mp) {
 
         mp.start();
+        pushNotificationPlayer();
+    }
+
+    private void pushNotificationPlayer() {
+
     }
 
     public void addPlaylist(ArrayList<Song> currentPlaylist) {
