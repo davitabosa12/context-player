@@ -1,5 +1,6 @@
 package br.ufc.great.contextplayer.model;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
@@ -18,6 +19,7 @@ public class Song {
     private String displayName; //nome do arquivo
     private String size; //tamanho da musica, em bytes
     private String title; //titulo da musica
+    private String audio_id; //id do audio para playlists
 
     public Song() {
     }
@@ -38,7 +40,24 @@ public class Song {
         s.setTitle(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
         s.setTrack(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)));
         s.setYear(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR)));
+        s.setAudio_id(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)));
         return s;
+    }
+
+    public ContentValues asContentValues(){
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Audio.Media.ALBUM, getAlbum());
+        values.put(MediaStore.Audio.Media.ARTIST, getArtist());
+        values.put(MediaStore.Audio.Media.COMPOSER, getComposer());
+        values.put(MediaStore.Audio.Media.DATA, getData());
+        values.put(MediaStore.Audio.Media.DISPLAY_NAME, getDisplayName());
+        values.put(MediaStore.Audio.Media.DURATION, getDuration());
+        values.put(MediaStore.Audio.Media.SIZE, getSize());
+        values.put(MediaStore.Audio.Media.TITLE, getTitle());
+        values.put(MediaStore.Audio.Media.TRACK, getTrack());
+        values.put(MediaStore.Audio.Media.YEAR, getYear());
+        values.put(MediaStore.Audio.Media._ID, getAudio_id());
+        return values;
     }
     @Override
     public String toString() {
@@ -155,5 +174,11 @@ public class Song {
     }
 
 
+    public String getAudio_id() {
+        return audio_id;
+    }
 
+    public void setAudio_id(String audio_id) {
+        this.audio_id = audio_id;
+    }
 }
