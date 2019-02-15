@@ -15,11 +15,19 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class Playlist {
+    public List<Song> getSongs() {
+        return songs;
+    }
+
     List<Song> songs;
     Context context;
     String playlistName;
     long id;
+
+    private static String TAG = "Playlist";
 
     public Playlist(Context context, String playlistName){
         this.context = context;
@@ -39,6 +47,8 @@ public class Playlist {
         Uri playlists = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
         Playlist p = null;
         Cursor c = resolver.query(playlists, new String[] { "*" }, null, null, null);
+        if(c.getCount() <=0)
+            return -1;
         c.moveToFirst();
         do {
             String currentPlaylistName = c.getString(c.getColumnIndex(MediaStore.Audio.Playlists.NAME));
@@ -50,6 +60,26 @@ public class Playlist {
         } while (c.moveToNext());
 
         return -1;
+    }
+    public static long createBlankPlaylist(Context context, String playlistName) {
+        ContentResolver resolver = context.getContentResolver();
+
+        Uri playlistUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Audio.Playlists.NAME, playlistName);
+        values.put(MediaStore.Audio.Playlists.DATE_ADDED, System.currentTimeMillis());
+        values.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis());
+
+        Uri createdPlaylistUri = resolver.insert(playlistUri, values);
+
+        Cursor created = resolver.query(createdPlaylistUri, PROJECTION_PLAYLIST, null, null ,null );
+
+        created.moveToFirst();
+        int id = created.getInt(created.getColumnIndex(MediaStore.Audio.Playlists._ID));
+        Log.d(TAG, "createBlankPlaylist: created playlist \"" + playlistName + "\" with id " + id);
+        return id;
+
     }
 
     private Cursor getPlaylistTracks(Context context, Long playlist_id) {

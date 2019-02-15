@@ -62,12 +62,12 @@ public class SongView extends ConstraintLayout {
     }
 
     private String calculateDuration(String duration) {
-        int hours, minutes, seconds;
+        int minutes, seconds;
         int durationInMillis = Integer.parseInt(duration);
         int totalSeconds = durationInMillis / 1000;
         seconds = totalSeconds % 60;
-        minutes = (totalSeconds / 60) % 60;
-        hours = minutes / 60;
+        minutes = (totalSeconds / 60);
+
 
         String secondsString, minutesString, finalString;
         if(seconds < 10){
@@ -75,16 +75,9 @@ public class SongView extends ConstraintLayout {
         } else {
             secondsString = "" + seconds ;
         }
-        if(hours > 0){
-            if(minutes < 10){
-                minutesString = "0" + minutes;
-            } else {
-                minutesString = "" + minutes;
-            }
-            finalString = hours + ":" + minutesString + ":" + secondsString;
-        } else{
-            finalString = minutes + ":" + secondsString;
-        }
+
+        finalString = minutes + ":" + secondsString;
+
         return finalString;
 
 

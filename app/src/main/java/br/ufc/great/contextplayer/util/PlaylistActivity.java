@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import br.ufc.great.contextplayer.EditarPlaylistActivity;
 import br.ufc.great.contextplayer.R;
 
 public class PlaylistActivity extends AppCompatActivity implements View.OnClickListener{
@@ -27,17 +28,27 @@ public class PlaylistActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        Intent editarPlaylist = new Intent(this, )
+        Intent editarPlaylist = new Intent(this, EditarPlaylistActivity.class);
         switch (view.getId()){
             case R.id.btn_nuvens:
+                editarPlaylist.putExtra("playlist", "nuvens");
+                startActivity(editarPlaylist);
                 break;
             case R.id.btn_ensolarado:
+                editarPlaylist.putExtra("playlist", "nuvens");
+                startActivity(editarPlaylist);
                 break;
             case R.id.btn_chuvoso:
+                editarPlaylist.putExtra("playlist", "nuvens");
+                startActivity(editarPlaylist);
                 break;
             case R.id.btn_treino:
+                editarPlaylist.putExtra("playlist", "nuvens");
+                startActivity(editarPlaylist);
                 break;
             case R.id.btn_no_carro:
+                editarPlaylist.putExtra("playlist", "nuvens");
+                startActivity(editarPlaylist);
                 break;
             default:
                 return;

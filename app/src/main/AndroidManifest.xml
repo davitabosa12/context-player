@@ -3,6 +3,7 @@
     package="br.ufc.great.contextplayer">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -31,7 +32,11 @@
             android:exported="true" />
 
         <activity android:name=".util.PlaylistActivity" />
-        <activity android:name=".EditarPlaylistActivity"></activity>
+        <activity android:name=".EditarPlaylistActivity" />
+        <activity
+            android:name=".Main2Activity"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

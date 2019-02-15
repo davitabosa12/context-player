@@ -22,6 +22,7 @@ import android.widget.RemoteViews;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import br.ufc.great.contextplayer.R;
 import br.ufc.great.contextplayer.model.Song;
@@ -163,7 +164,7 @@ public class PlaybackService extends Service
 
     }
 
-    public void addPlaylist(ArrayList<Song> currentPlaylist) {
+    public void addPlaylist(List<Song> currentPlaylist) {
         songs.clear();
         songs.addAll(currentPlaylist);
     }

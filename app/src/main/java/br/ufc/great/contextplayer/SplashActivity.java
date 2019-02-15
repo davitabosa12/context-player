@@ -1,13 +1,20 @@
 package br.ufc.great.contextplayer;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import br.ufc.great.contextplayer.model.Playlist;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -25,6 +32,8 @@ public class SplashActivity extends AppCompatActivity {
      * user interaction before hiding the system UI.
      */
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+
+    private static final String TAG = "SplashActivity";
 
     /**
      * Some older devices needs a small delay between UI widget updates
@@ -87,12 +96,31 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //todo: thread de 3 segundos
-        startActivity(new Intent(this, MainActivity.class));
 
-        finish();
+
 
         setContentView(R.layout.activity_splash);
+
+        //todo: thread de 3 segundos
+
+        boolean granted = true;
+        String[] permissions = {Manifest.permission.WAKE_LOCK, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        for(String permission : permissions){
+            if(checkSelfPermission(permission) == PackageManager.PERMISSION_DENIED){
+                granted = false;
+            }
+        }
+        if(granted){
+            checkAndCreateDefaultPlaylists();
+            startActivity(new Intent(this, Main2Activity.class));
+        } else {
+            requestPermissions(permissions, 1337);
+        }
+
+
+
+
+        finish();
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
@@ -112,6 +140,34 @@ public class SplashActivity extends AppCompatActivity {
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for(int result : grantResults){
+            if(result == PackageManager.PERMISSION_DENIED){
+                finish();
+                return;
+
+            }
+        }
+        checkAndCreateDefaultPlaylists();
+        startActivity(new Intent(this, Main2Activity.class));
+    }
+
+    private void checkAndCreateDefaultPlaylists() {
+        for(String playlistName : DEFAULT_PLAYLISTS) {
+            if (Playlist.getPlaylistId(this, playlistName) == -1) {
+                //playlist doesn't exist, create a new one
+
+                long id = Playlist.createBlankPlaylist(this, playlistName);
+                Log.d(TAG, "checkAndCreateDefaultPlaylists: created " + playlistName + " with id = " + id);
+
+            }
+        }
+    }
+
+    public static String[] DEFAULT_PLAYLISTS = {"chuvoso", "ensolarado", "carro", "treino", "nuvens"};
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

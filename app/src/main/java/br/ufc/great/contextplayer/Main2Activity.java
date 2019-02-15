@@ -1,7 +1,13 @@
 package br.ufc.great.contextplayer;
 
+import android.app.ActionBar;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -18,7 +24,12 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-public class Main2Activity extends AppCompatActivity {
+import br.ufc.great.contextplayer.fragments.MainScreenFragment;
+import br.ufc.great.contextplayer.fragments.OnFragmentInteractionListener;
+import br.ufc.great.contextplayer.model.Playlist;
+import br.ufc.great.contextplayer.services.PlaybackService;
+
+public class Main2Activity extends AppCompatActivity implements OnFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -28,12 +39,18 @@ public class Main2Activity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private MainPagerAdapter mainPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private TabLayout mTabLayout;
+
+    //music player service
+    private PlaybackService musicService;
+    private boolean musicBound = false;
+    private Intent playIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,23 +58,17 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
+        mTabLayout = findViewById(R.id.tab_layout);
+
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        mViewPager.setAdapter(mainPagerAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
 
     }
 
@@ -84,62 +95,54 @@ public class Main2Activity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
+    @Override
+    public void onFragmentInteraction(Fragment fragment, View view) {
+        Playlist p;
+        switch(view.getId()){
+            case R.id.btn_chuvoso:
+                p = new Playlist(getApplicationContext(), "chuvoso");
+                break;
+            case R.id.btn_ensolarado:
+                p = new Playlist(getApplicationContext(), "ensolarado");
+                break;
+            case R.id.btn_no_carro:
+                p = new Playlist(getApplicationContext(), "carro");
+                break;
+            case R.id.btn_nuvens:
+                p = new Playlist(getApplicationContext(), "nuvens");
+                break;
+            case R.id.btn_treino:
+                p = new Playlist(getApplicationContext(), "treino");
+                break;
+            default:
+                p = null;
         }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main2, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
+        musicService.addPlaylist(p.getSongs());
+        musicService.setSong(0);
+        musicService.playSong();
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+    private ServiceConnection musicConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            PlaybackService.PlaybackBinder binder = (PlaybackService.PlaybackBinder) service;
+            musicService = binder.getService();
+            musicBound = true;
         }
 
         @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+        public void onServiceDisconnected(ComponentName name) {
+            musicBound = false;
         }
+    };
 
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(playIntent == null){
+            playIntent = new Intent(this, PlaybackService.class);
+            bindService(playIntent, musicConnection, BIND_AUTO_CREATE);
+            startService(playIntent);
         }
     }
 }
