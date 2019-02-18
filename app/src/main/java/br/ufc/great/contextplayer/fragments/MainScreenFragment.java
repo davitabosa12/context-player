@@ -74,16 +74,16 @@ public class MainScreenFragment extends Fragment implements View.OnLongClickList
 
     private void setUpButtonListeners() {
         btnTreino.setOnLongClickListener(this);
-//        btnCarro.setOnLongClickListener(this);
-//        btnChuvoso.setOnLongClickListener(this);
-//        btnEnsolarado.setOnLongClickListener(this);
-//        btnNuvens.setOnLongClickListener(this);
-//
+        btnCarro.setOnLongClickListener(this);
+        btnChuvoso.setOnLongClickListener(this);
+        btnEnsolarado.setOnLongClickListener(this);
+        btnNuvens.setOnLongClickListener(this);
+
         btnTreino.setOnClickListener(this);
-//        btnCarro.setOnClickListener(this);
-//        btnChuvoso.setOnClickListener(this);
-//        btnEnsolarado.setOnClickListener(this);
-//        btnNuvens.setOnClickListener(this);
+        btnCarro.setOnClickListener(this);
+        btnChuvoso.setOnClickListener(this);
+        btnEnsolarado.setOnClickListener(this);
+        btnNuvens.setOnClickListener(this);
     }
 
     @Override

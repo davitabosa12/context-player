@@ -258,8 +258,10 @@ public class PlaybackService extends Service
 
         private void playPause() {
             if(player.isPlaying()){
+                remoteViews.setImageViewResource(R.id.btn_playpause, R.drawable.ic_play_arrow_black_24dp);
                 player.pause();
             } else {
+                remoteViews.setImageViewResource(R.id.btn_playpause, R.drawable.ic_pause_black_24dp);
                 player.start();
             }
         }

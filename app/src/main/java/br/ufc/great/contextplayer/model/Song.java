@@ -191,4 +191,14 @@ public class Song {
     public void setAudio_id(String audio_id) {
         this.audio_id = audio_id;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(! (obj instanceof Song))
+            return false;
+        else {
+            Song objSong = (Song) obj;
+            return objSong.data.equals(data);
+        }
+    }
 }
