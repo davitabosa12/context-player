@@ -1,6 +1,8 @@
 package br.ufc.great.contextplayer.services;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -32,6 +34,8 @@ public class PlaybackService extends Service
         implements  MediaPlayer.OnPreparedListener,
                     MediaPlayer.OnErrorListener,
                     MediaPlayer.OnCompletionListener {
+    private static String TAG = "PlaybackService";
+    private static final String NOTIFICATION_ID = "context-player.default";
     //media player
     private MediaPlayer player;
     //song list
@@ -57,13 +61,19 @@ public class PlaybackService extends Service
         this.context = this;
         nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        remoteViews = new RemoteViews(getPackageName(), R.layout.playing_notification);
+        //set notification channel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            nm.createNotificationChannel(new NotificationChannel(NOTIFICATION_ID, "Padrão", NotificationManager.IMPORTANCE_LOW));
+        }
+
+        remoteViews = new RemoteViews(getPackageName(), R.layout.notification_playing);
         control = new PlaybackControl();
 
         player = new MediaPlayer();
         initPlayer();
         //register the receiver
         registerReceiver(control, new IntentFilter(PlayerIntentActions.CONTROL_PLAYBACK));
+        Log.d(TAG, "onCreate: SERVICE STARTED!");
     }
 
     private void initPlayer(){
@@ -153,14 +163,30 @@ public class PlaybackService extends Service
         previous.putExtra("action", PlayerIntentActions.PREVIOUS);
 
         //set on click pending intent listeners
-        remoteViews.setOnClickPendingIntent(R.id.btn_play_pause,
-                PendingIntent.getBroadcast(context, 142, playpause, 0)); //play pause
+        remoteViews.setOnClickPendingIntent(R.id.btn_playpause,
+                PendingIntent.getBroadcast(context, 141, playpause, 0)); //play pause
+        remoteViews.setImageViewResource(R.id.btn_playpause, R.drawable.ic_pause_black_24dp);
+
         remoteViews.setOnClickPendingIntent(R.id.btn_stop,
-                PendingIntent.getBroadcast(context, 142, stop, 0)); // stop
+                PendingIntent.getBroadcast(context, 145, stop, 0)); // stop
+        remoteViews.setImageViewResource(R.id.btn_stop, R.drawable.ic_close_black_24dp);
+
         remoteViews.setOnClickPendingIntent(R.id.btn_next,
-                PendingIntent.getBroadcast(context, 142, next, 0)); //next
+                PendingIntent.getBroadcast(context, 143, next, 0)); //next
+        remoteViews.setImageViewResource(R.id.btn_next, R.drawable.ic_skip_next_black_24dp);
+
         remoteViews.setOnClickPendingIntent(R.id.btn_previous,
-                PendingIntent.getBroadcast(context, 142, previous, 0)); //previous
+                PendingIntent.getBroadcast(context, 144, previous, 0)); //previous
+        remoteViews.setImageViewResource(R.id.btn_previous, R.drawable.ic_skip_previous_black_24dp);
+
+        Notification.Builder builder = new Notification.Builder(context)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setCustomBigContentView(remoteViews);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(NOTIFICATION_ID);
+        }
+
+        nm.notify(notificationId, builder.build());
 
     }
 
@@ -182,12 +208,16 @@ public class PlaybackService extends Service
         public void onReceive(Context context, Intent intent) {
             String action = intent.getStringExtra("action");
             if(action.equals(PlayerIntentActions.PLAY_PAUSE)){
+                Log.d(TAG, "onReceive: PLAYPAUSE");
                 playPause();
             } else if(action.equals(PlayerIntentActions.STOP)){
+                Log.d(TAG, "onReceive: STOP");
                 stop(intent);
             } else if(action.equals(PlayerIntentActions.NEXT)){
+                Log.d(TAG, "onReceive: NEXT");
                 next();
             } else if(action.equals(PlayerIntentActions.PREVIOUS)){
+                Log.d(TAG, "onReceive: PREVIOUS");
                 previous();
             } else {
                 Log.e(TAG, "onReceive: can't understand action \"" + action + "\".");

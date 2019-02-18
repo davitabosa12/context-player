@@ -113,6 +113,7 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
                 break;
             case R.id.btn_treino:
                 p = new Playlist(getApplicationContext(), "treino");
+
                 break;
             default:
                 p = null;
@@ -120,6 +121,7 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         musicService.addPlaylist(p.getSongs());
         musicService.setSong(0);
         musicService.playSong();
+
     }
 
     private ServiceConnection musicConnection = new ServiceConnection() {

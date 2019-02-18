@@ -36,7 +36,8 @@ public class Playlist {
         songs = new ArrayList<>();
         Cursor allSongs = getPlaylistTracks(context, id);
         for(allSongs.moveToFirst(); !allSongs.isAfterLast(); allSongs.moveToNext()){
-            Song song = Song.fromCursor(allSongs);
+            long songId = allSongs.getInt(allSongs.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID));
+            Song song = Song.fromAudioId(context, songId);
             if(song != null)
                 songs.add(song);
         }
@@ -132,18 +133,18 @@ public class Playlist {
             long playlistId = createBlankPlaylist(playlistName);
             ContentResolver resolver = context.getContentResolver();
             Uri playlistUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
-
+            int order = 0;
             for(Pair<Song, Integer> pair : songs){
 
                 Song song = pair.first;
-                ContentValues values = song.asContentValues();
-                int order = pair.second;
 
-                values.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, song.getAudio_id());
+
+                ContentValues values = song.asContentValues(order++);
+                /*values.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, song.getAudio_id());
                 values.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, order);
                 values.put(MediaStore.Audio.Playlists.Members.DISPLAY_NAME, song.getDisplayName());
                 values.put(MediaStore.Audio.Playlists.Members.ARTIST, song.getArtist());
-                values.put(MediaStore.Audio.Playlists.Members.DATA, song.getData());
+                values.put(MediaStore.Audio.Playlists.Members.DATA, song.getData());*/
                 Uri inserted = resolver.insert(playlistUri, values);
                 Log.d(TAG, "build: inserted song " + song.getTitle() + " with URI " + inserted.toString());
 

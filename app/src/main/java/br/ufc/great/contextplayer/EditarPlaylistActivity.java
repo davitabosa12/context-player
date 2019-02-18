@@ -1,5 +1,9 @@
 package br.ufc.great.contextplayer;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +20,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufc.great.contextplayer.model.Playlist;
 import br.ufc.great.contextplayer.model.Song;
 
 public class EditarPlaylistActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
@@ -56,9 +61,31 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
     }
 
     private void savePlaylist() {
+        ContentResolver resolver = getContentResolver();
+        Intent i = getIntent();
+        String playlist = i.getStringExtra("playlist");
+        Uri uri = getUriFromString(playlist);
+        Log.d(TAG, "savePlaylist: uri=" + uri);
+        int songOrder = 0;
         for(Song s : selectedSongs){
+
+            Uri x = resolver.insert(uri, s.asContentValues(songOrder++));
+            if(x==null)
+            {
+                Log.v(TAG,"unsuccess");
+            }
+            else
+            {
+                Log.v(TAG,"success");
+            }
             Log.d(TAG, "savePlaylist: " + s.getTitle() + " added to playlist!");
         }
+
+    }
+
+    private Uri getUriFromString(String playlist) {
+        int playlistId = Playlist.getPlaylistId(this, playlist);
+        return MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
     }
 
     private void updateSelectedMusic() {

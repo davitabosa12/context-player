@@ -79,7 +79,7 @@ public class MainScreenFragment extends Fragment implements View.OnLongClickList
 //        btnEnsolarado.setOnLongClickListener(this);
 //        btnNuvens.setOnLongClickListener(this);
 //
-//        btnTreino.setOnClickListener(this);
+        btnTreino.setOnClickListener(this);
 //        btnCarro.setOnClickListener(this);
 //        btnChuvoso.setOnClickListener(this);
 //        btnEnsolarado.setOnClickListener(this);

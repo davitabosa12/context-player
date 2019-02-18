@@ -1,7 +1,10 @@
 package br.ufc.great.contextplayer.model;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.MediaStore;
 
 //POJO  que representa uma musica
@@ -44,19 +47,26 @@ public class Song {
         return s;
     }
 
-    public ContentValues asContentValues(){
+    public static Song fromAudioId(Context context, long audio_id){
+        ContentResolver resolver = context.getContentResolver();
+        Uri externalSongs = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Cursor songList = resolver.query(externalSongs, new String[]{"*"}, MediaStore.Audio.Media._ID + " =" + audio_id,
+                null, null);
+        if (songList != null || songList.getCount() > 0) {
+            songList.moveToFirst();
+            return fromCursor(songList);
+        } else {
+            return null;
+        }
+
+    }
+
+
+    public ContentValues asContentValues(int playOrder){
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Audio.Media.ALBUM, getAlbum());
-        values.put(MediaStore.Audio.Media.ARTIST, getArtist());
-        values.put(MediaStore.Audio.Media.COMPOSER, getComposer());
-        values.put(MediaStore.Audio.Media.DATA, getData());
-        values.put(MediaStore.Audio.Media.DISPLAY_NAME, getDisplayName());
-        values.put(MediaStore.Audio.Media.DURATION, getDuration());
-        values.put(MediaStore.Audio.Media.SIZE, getSize());
-        values.put(MediaStore.Audio.Media.TITLE, getTitle());
-        values.put(MediaStore.Audio.Media.TRACK, getTrack());
-        values.put(MediaStore.Audio.Media.YEAR, getYear());
-        values.put(MediaStore.Audio.Media._ID, getAudio_id());
+
+        values.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, getAudio_id());
+        values.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, playOrder);
         return values;
     }
     @Override
