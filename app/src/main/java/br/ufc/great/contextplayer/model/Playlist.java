@@ -22,10 +22,10 @@ public class Playlist {
         return songs;
     }
 
-    List<Song> songs;
-    Context context;
-    String playlistName;
-    long id;
+    private List<Song> songs;
+    private Context context;
+    private String playlistName;
+    private long id;
 
     private static String TAG = "Playlist";
 

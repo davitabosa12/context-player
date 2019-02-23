@@ -28,6 +28,7 @@ import br.ufc.great.contextplayer.fragments.MainScreenFragment;
 import br.ufc.great.contextplayer.fragments.OnFragmentInteractionListener;
 import br.ufc.great.contextplayer.model.Playlist;
 import br.ufc.great.contextplayer.services.PlaybackService;
+import smd.ufc.br.easycontext.*;
 
 public class Main2Activity extends AppCompatActivity implements OnFragmentInteractionListener {
 
@@ -57,6 +58,7 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -69,6 +71,9 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mainPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+
+
+
 
     }
 
