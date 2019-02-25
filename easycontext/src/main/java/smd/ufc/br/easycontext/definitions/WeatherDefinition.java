@@ -85,7 +85,7 @@ public class WeatherDefinition extends ContextDefinition implements ContextCompa
             }
             sum += ContextDefinition.Maths.clamp(tempSum, 1.0f);
         }
-        return sum/calculationDamper; //hope that will be in 0..1 range!
+        return ContextDefinition.Maths.clamp(sum/calculationDamper, 1.0f);
     }
 
     @Override
