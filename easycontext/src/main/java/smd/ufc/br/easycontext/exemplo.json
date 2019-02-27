@@ -1,0 +1,34 @@
+{
+    "activities":[  
+        {
+            "name": "HeadphoneActivity",
+            "fences" : [
+                {
+                    "fenceName": "Headphone",
+                    "fenceAction": "br.ufc.great.awarenesslib.MyCustomAction",
+                    "fenceType":  "Headphone",
+                    "fenceMethod": "Headphone.DURING",
+                    "params": {
+                        "headphoneState": 1
+                    }
+                }
+            ]
+            
+        },
+        {
+            "name": "ActivityDetectionActivity",
+            "fences" : [
+                {
+                    "fenceName": "DetectorDeAtividade",
+                    "fenceAction": "ActivityDetectionAction",
+                    "fenceType": "DetectedActivity",
+                    "fenceMethod": "DetectedActivity.DURING",
+                    "params":{
+                        "activityTypes":[7]
+                    }
+                }
+            ]
+            
+        }
+    ]
+}
