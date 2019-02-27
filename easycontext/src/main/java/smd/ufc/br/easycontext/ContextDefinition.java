@@ -8,8 +8,6 @@ import com.google.android.gms.location.places.PlaceLikelihood;
  * ContextDefinition
  */
 public class ContextDefinition {
-    TimeIntervals timeIntervals;
-    Weather weather;
 
     public ContextDefinition(){
 

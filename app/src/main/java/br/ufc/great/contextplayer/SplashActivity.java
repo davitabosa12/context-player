@@ -104,7 +104,8 @@ public class SplashActivity extends AppCompatActivity {
         //todo: thread de 3 segundos
 
         boolean granted = true;
-        String[] permissions = {Manifest.permission.WAKE_LOCK, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        String[] permissions = {Manifest.permission.WAKE_LOCK, Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         for(String permission : permissions){
             if(checkSelfPermission(permission) == PackageManager.PERMISSION_DENIED){
                 granted = false;

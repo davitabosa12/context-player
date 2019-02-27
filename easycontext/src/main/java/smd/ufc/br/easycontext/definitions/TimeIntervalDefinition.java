@@ -2,9 +2,7 @@ package smd.ufc.br.easycontext.definitions;
 
 import com.google.android.gms.awareness.state.TimeIntervals;
 
-import java.sql.Time;
 
-import smd.ufc.br.easycontext.BuildConfig;
 import smd.ufc.br.easycontext.ContextComparator;
 import smd.ufc.br.easycontext.ContextDefinition;
 

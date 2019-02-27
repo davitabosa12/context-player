@@ -1,36 +1,40 @@
 package br.ufc.great.contextplayer;
 
-import android.app.ActionBar;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
-import android.widget.TextView;
 
-import br.ufc.great.contextplayer.fragments.MainScreenFragment;
+import com.google.android.gms.awareness.Awareness;
+import com.google.android.gms.awareness.SnapshotClient;
+import com.google.android.gms.awareness.snapshot.TimeIntervalsResponse;
+import com.google.android.gms.awareness.state.TimeIntervals;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
 import br.ufc.great.contextplayer.fragments.OnFragmentInteractionListener;
 import br.ufc.great.contextplayer.model.Playlist;
 import br.ufc.great.contextplayer.services.PlaybackService;
-import smd.ufc.br.easycontext.*;
+import smd.ufc.br.easycontext.CurrentContext;
+import smd.ufc.br.easycontext.Snapshot;
 
-public class Main2Activity extends AppCompatActivity implements OnFragmentInteractionListener {
+public class Main2Activity extends AppCompatActivity implements OnFragmentInteractionListener, Snapshot.OnContextUpdate {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -47,6 +51,7 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
      */
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
+    private static final String TAG = "Main2Activity";
 
     //music player service
     private PlaybackService musicService;
@@ -71,10 +76,20 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mainPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+        Snapshot snapshot = Snapshot.getInstance(this);
 
+       /* try {
+            //snapshot.updateContext(Snapshot.WEATHER, Snapshot.TIME_INTERVAL, Snapshot.DETECTED_ACTIVITY);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
 
-
-
+        snapshot.setCallback(this);
+        try {
+            snapshot.updateContext(Snapshot.WEATHER, Snapshot.TIME_INTERVAL, Snapshot.DETECTED_ACTIVITY);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -152,4 +167,13 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
             startService(playIntent);
         }
     }
+
+    @Override
+    public void onContextUpdate(CurrentContext currentContext) {
+        if (currentContext == null) {
+            return;
+        }
+        Log.d(TAG, "onContextUpdate: " + currentContext.toString());
+    }
+
 }

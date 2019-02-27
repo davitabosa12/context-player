@@ -51,7 +51,7 @@ public class SongView extends ConstraintLayout {
 
     private void updateUI() {
         if(song == null){
-            Log.e(TAG, "updateUI: song is null", new NullPointerException());
+            //Log.e(TAG, "updateUI: song is null", new NullPointerException());
             return;
         }
         //todo: update ui on new song
