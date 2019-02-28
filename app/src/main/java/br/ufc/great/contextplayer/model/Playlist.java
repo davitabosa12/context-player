@@ -16,6 +16,7 @@ import java.util.Random;
 import java.util.UUID;
 
 
+import smd.ufc.br.easycontext.ContextDefinition;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -26,8 +27,22 @@ public class Playlist {
 
     private List<Song> songs;
     private Context context;
+
+    public String getPlaylistName() {
+        return playlistName;
+    }
+
     private String playlistName;
-    //private ContextDefinition[] definitions;
+
+    public ContextDefinition[] getDefinitions() {
+        return definitions;
+    }
+
+    public void setDefinitions(ContextDefinition ...definitions) {
+        this.definitions = definitions;
+    }
+
+    private ContextDefinition[] definitions;
     private long id;
 
     private static String TAG = "Playlist";

@@ -22,7 +22,6 @@ import smd.ufc.br.easycontext.CurrentContext;
 public class PlaylistRecommendationFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_CURRENT_CONTEXT = "currentcontext";
 
 
     // TODO: Rename and change types of parameters
@@ -42,22 +41,17 @@ public class PlaylistRecommendationFragment extends Fragment {
      * @return A new instance of fragment PlaylistRecommendationFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PlaylistRecommendationFragment newInstance(CurrentContext currentContext) {
+    public static PlaylistRecommendationFragment newInstance() {
         PlaylistRecommendationFragment fragment = new PlaylistRecommendationFragment();
-        Bundle args = new Bundle();
-        //is CurrentContext serializable??
-        args.putSerializable(ARG_CURRENT_CONTEXT, currentContext);
 
-        fragment.setArguments(args);
+        //is CurrentContext serializable??
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mCurrentContext = (CurrentContext) getArguments().getSerializable(ARG_CURRENT_CONTEXT);
-        }
+
     }
 
     @Override
@@ -67,12 +61,7 @@ public class PlaylistRecommendationFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_playlist_recommendation, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+
 
     @Override
     public void onAttach(Context context) {

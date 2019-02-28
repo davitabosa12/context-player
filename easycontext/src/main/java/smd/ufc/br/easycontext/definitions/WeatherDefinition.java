@@ -90,26 +90,46 @@ public class WeatherDefinition extends ContextDefinition implements ContextCompa
 
     @Override
     public float getTemperature(int i) {
-        return 0;
+        return _temperature;
     }
 
     @Override
     public float getFeelsLikeTemperature(int i) {
-        return 0;
+        return _feelsLikeTemperature;
     }
 
     @Override
     public float getDewPoint(int i) {
-        return 0;
+        return _dewPoint;
     }
 
     @Override
     public int getHumidity() {
-        return 0;
+        return _humidity;
     }
 
     @Override
     public int[] getConditions() {
-        return new int[0];
+        return _conditions;
+    }
+
+    public void setTemperature(float _temperature) {
+        this._temperature = _temperature;
+    }
+
+    public void setFeelsLikeTemperature(float _feelsLikeTemperature) {
+        this._feelsLikeTemperature = _feelsLikeTemperature;
+    }
+
+    public void setDewPoint(float _dewPoint) {
+        this._dewPoint = _dewPoint;
+    }
+
+    public void setHumidity(int _humidity) {
+        this._humidity = _humidity;
+    }
+
+    public void setConditions(int ...conditions) {
+        this._conditions = conditions;
     }
 }

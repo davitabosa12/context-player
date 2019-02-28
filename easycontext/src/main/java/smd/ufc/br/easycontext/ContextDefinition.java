@@ -7,7 +7,7 @@ import com.google.android.gms.location.places.PlaceLikelihood;
 /**
  * ContextDefinition
  */
-public class ContextDefinition {
+public abstract class ContextDefinition implements ContextComparator{
 
     public ContextDefinition(){
 
