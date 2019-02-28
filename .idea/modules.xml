@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/ContextPlayer.iml" filepath="$PROJECT_DIR$/ContextPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/context-player.iml" filepath="$PROJECT_DIR$/context-player.iml" />
       <module fileurl="file://$PROJECT_DIR$/easycontext/easycontext.iml" filepath="$PROJECT_DIR$/easycontext/easycontext.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easycontext/easycontext.iml" filepath="$PROJECT_DIR$/easycontext/easycontext.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easycontext/easycontextt.iml" filepath="$PROJECT_DIR$/easycontext/easycontextt.iml" />
     </modules>
   </component>
 </project>

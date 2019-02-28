@@ -10,6 +10,7 @@ import java.util.List;
 
 import br.ufc.great.contextplayer.fragments.MainScreenFragment;
 import br.ufc.great.contextplayer.fragments.MusicListFragment;
+import br.ufc.great.contextplayer.fragments.SelectPlaylistFragment;
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
     private List<Fragment> mFragments;
@@ -18,6 +19,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
         mFragments = new ArrayList<>();
         Fragment musicList = MusicListFragment.newInstance();
         Fragment mainScreen = MainScreenFragment.newInstance();
+        Fragment playlistSelect = SelectPlaylistFragment.newInstance();
         mFragments.add(musicList);
         mFragments.add(mainScreen);
     }

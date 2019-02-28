@@ -1,11 +1,13 @@
 package br.ufc.great.contextplayer.model;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Pair;
 
@@ -61,6 +63,11 @@ public class Playlist {
         }
     }
 
+    public void addSong(Song song){
+        songs.add(song);
+    }
+
+
     public static int getPlaylistId(Context context, String playlistName){
         ContentResolver resolver = context.getContentResolver();
         Uri playlists = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
@@ -80,26 +87,22 @@ public class Playlist {
 
         return -1;
     }
-    public static long createBlankPlaylist(Context context, String playlistName) {
+
+    public static List<Playlist> getAllPlaylists(Context context){
         ContentResolver resolver = context.getContentResolver();
-
         Uri playlistUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
+        Cursor cursor = resolver.query(playlistUri, PROJECTION_PLAYLIST, null, null, null);
+        List<Playlist> allPlaylists = new ArrayList<Playlist>();
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists._ID));
+            long name = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists._ID));
 
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Audio.Playlists.NAME, playlistName);
-        values.put(MediaStore.Audio.Playlists.DATE_ADDED, System.currentTimeMillis());
-        values.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis());
-
-        Uri createdPlaylistUri = resolver.insert(playlistUri, values);
-
-        Cursor created = resolver.query(createdPlaylistUri, PROJECTION_PLAYLIST, null, null ,null );
-
-        created.moveToFirst();
-        int id = created.getInt(created.getColumnIndex(MediaStore.Audio.Playlists._ID));
-        Log.d(TAG, "createBlankPlaylist: created playlist \"" + playlistName + "\" with id " + id);
-        return id;
-
+        }
     }
+
+
+
+
 
     private Cursor getPlaylistTracks(Context context, Long playlist_id) {
         Uri newuri = MediaStore.Audio.Playlists.Members.getContentUri(
@@ -171,34 +174,7 @@ public class Playlist {
             return new Playlist(context, playlistName);
         }
 
-        /**
-         * Creates a playlist
-         * @param playlistName name of the playlist
-         * @return the id of created playlist
-         */
-        private long createBlankPlaylist(String playlistName) {
-            ContentResolver resolver = context.getContentResolver();
 
-            Uri playlistUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.Audio.Playlists.NAME, playlistName);
-            values.put(MediaStore.Audio.Playlists.DATE_ADDED, System.currentTimeMillis());
-            values.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis());
-
-            Uri createdPlaylistUri = resolver.insert(playlistUri, values);
-
-            Cursor created = resolver.query(createdPlaylistUri, PROJECTION_PLAYLIST, null, null ,null );
-
-            created.moveToFirst();
-            int id = created.getInt(created.getColumnIndex(MediaStore.Audio.Playlists._ID));
-            Log.d(TAG, "createBlankPlaylist: created playlist \"" + playlistName + "\" with id " + id);
-            return id;
-
-        }
     }
-    public static final String[] PROJECTION_PLAYLIST = new String[] {
-            MediaStore.Audio.Playlists._ID,
-            MediaStore.Audio.Playlists.NAME,
-            MediaStore.Audio.Playlists.DATA
-    };
+
 }

@@ -126,7 +126,7 @@ public class Snapshot {
      * @param providers context-aware providers to update
      * @throws InterruptedException if times out
      */
-    public void updateContext(int ...providers) throws InterruptedException {
+    public void updateContext(int ...providers){
         final List< Task<?> > tasks = new ArrayList<>();
         for(int p : providers){
             switch (p){
