@@ -30,7 +30,7 @@ public class Song {
     public static Song fromCursor(Cursor cursor){
         Song s = new Song();
 
-        //TODO: usar os setters e ler o cursor;
+
         s.setAlbum(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
         s.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
         s.setComposer(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER)));

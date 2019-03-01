@@ -1,7 +1,6 @@
 package br.ufc.great.contextplayer.views;
 
 import android.content.Context;
-import android.icu.util.MeasureUnit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
@@ -15,8 +14,6 @@ import br.ufc.great.contextplayer.model.Playlist;
 import smd.ufc.br.easycontext.ContextDefinition;
 import smd.ufc.br.easycontext.definitions.TimeIntervalDefinition;
 import smd.ufc.br.easycontext.definitions.WeatherDefinition;
-
-import static br.ufc.great.contextplayer.R.drawable.ic_weather_black_24dp;
 
 public class PlaylistBigCard extends CardView {
 
@@ -86,7 +83,7 @@ public class PlaylistBigCard extends CardView {
 
     public void setPlaylist(Playlist playlist){
         this.playlist = playlist;
-        mTitle.setText(playlist.getPlaylistName());
+        mTitle.setText(playlist.getName());
         ContextDefinition[] definitions = playlist.getDefinitions();
         setContextImages(definitions);
 

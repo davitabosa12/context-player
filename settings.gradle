@@ -1,2 +1,1 @@
-include ':app', ':easycontext', ':easycontextt'
-project(':easycontextt').projectDir = new File('easycontext')
+include ':app', ':easycontext'
