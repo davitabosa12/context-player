@@ -1,4 +1,4 @@
-package smd.ufc.br.easycontext.definitions;
+package smd.ufc.br.easycontext.persistance.entities;
 
 import android.location.Location;
 

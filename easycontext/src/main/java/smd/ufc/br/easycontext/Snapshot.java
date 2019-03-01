@@ -22,11 +22,7 @@ import com.google.android.gms.tasks.Tasks;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ForkJoinTask;
-
-import smd.ufc.br.easycontext.definitions.WeatherDefinition;
 
 public class Snapshot {
 

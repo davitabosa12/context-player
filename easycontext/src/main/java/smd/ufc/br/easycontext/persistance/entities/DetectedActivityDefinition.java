@@ -1,21 +1,31 @@
-package smd.ufc.br.easycontext.definitions;
+package smd.ufc.br.easycontext.persistance.entities;
 
-import com.google.android.gms.location.DetectedActivity;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
+import java.util.Arrays;
 
 import smd.ufc.br.easycontext.ContextDefinition;
 
+@Entity
 public class DetectedActivityDefinition extends ContextDefinition {
 
-    public int[] getActivityTypes() {
-        return activityTypes;
-    }
+    @PrimaryKey
+    private int uid;
+
+    @ColumnInfo(name = "activityTypes")
+    int[] activityTypes;
 
     public DetectedActivityDefinition setActivityTypes(int... activityTypes) {
         this.activityTypes = activityTypes;
         return this;
     }
 
-    int[] activityTypes;
+
+    public int[] getActivityTypes() {
+        return activityTypes;
+    }
 
     public DetectedActivityDefinition() {
     }

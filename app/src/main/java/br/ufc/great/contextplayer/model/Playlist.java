@@ -1,6 +1,5 @@
 package br.ufc.great.contextplayer.model;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -10,8 +9,12 @@ import java.util.List;
 import smd.ufc.br.easycontext.ContextDefinition;
 
 public class Playlist {
+
     private List<Song> songs;
     private String name;
+    private List<ContextDefinition> definitions;
+    private long id;
+    private static String TAG = "Playlist";
 
     public List<Song> getSongs() {
         return songs;
@@ -21,33 +24,13 @@ public class Playlist {
         return name;
     }
 
-    public ContextDefinition[] getDefinitions() {
+    public List<ContextDefinition> getDefinitions() {
         return definitions;
     }
 
-    public void setDefinitions(ContextDefinition ...definitions) {
+    public void setDefinitions(List<ContextDefinition> definitions) {
         this.definitions = definitions;
     }
-
-    private ContextDefinition[] definitions;
-    private long id;
-
-    private static String TAG = "Playlist";
-
-//    @Deprecated
-//    public Playlist(Context context, String name){
-//        this.context = context;
-//        this.name = name;
-//        id = getPlaylistId(context, name);
-//        songs = new ArrayList<>();
-//        Cursor allSongs = getPlaylistTracks(context, id);
-//        for(allSongs.moveToFirst(); !allSongs.isAfterLast(); allSongs.moveToNext()){
-//            long songId = allSongs.getInt(allSongs.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID));
-//            Song song = Song.fromAudioId(context, songId);
-//            if(song != null)
-//                songs.add(song);
-//        }
-//    }
 
     public Playlist(String name, @Nullable List<Song> songList, @Nullable long id){
         this.name = name;
@@ -73,6 +56,16 @@ public class Playlist {
         }
 
     }
+
+    public void addContextDefinition(ContextDefinition definition){
+        definitions.add(definition);
+    }
+
+    public boolean removeContextDefinition(ContextDefinition definition){
+        return definitions.remove(definition);
+    }
+
+
 
     public boolean removeSong(Song song){
         return songs.remove(song);

@@ -1,5 +1,8 @@
-package smd.ufc.br.easycontext.definitions;
+package smd.ufc.br.easycontext.persistance.entities;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.awareness.state.Weather;
@@ -7,13 +10,26 @@ import com.google.android.gms.awareness.state.Weather;
 import smd.ufc.br.easycontext.ContextComparator;
 import smd.ufc.br.easycontext.ContextDefinition;
 
+@Entity
 public class WeatherDefinition extends ContextDefinition implements ContextComparator, Weather {
 
     // --------------------- FIELDS ------------------------ //
+    @PrimaryKey
+    private int uid;
+
+    @ColumnInfo(name = "temperature")
     private float _temperature;
+
+    @ColumnInfo(name = "feels_like_temperature")
     private float _feelsLikeTemperature;
+
+    @ColumnInfo(name = "dew_point")
     private float _dewPoint;
+
+    @ColumnInfo(name = "humidity")
     private int _humidity;
+
+    @ColumnInfo(name = "conditions")
     private int[] _conditions;
 
     // -------------------- LOOK-UP MATRICES ---------------- //

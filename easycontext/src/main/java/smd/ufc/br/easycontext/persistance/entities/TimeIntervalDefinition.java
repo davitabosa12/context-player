@@ -1,4 +1,8 @@
-package smd.ufc.br.easycontext.definitions;
+package smd.ufc.br.easycontext.persistance.entities;
+
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
 import com.google.android.gms.awareness.state.TimeIntervals;
 
@@ -6,9 +10,15 @@ import com.google.android.gms.awareness.state.TimeIntervals;
 import smd.ufc.br.easycontext.ContextComparator;
 import smd.ufc.br.easycontext.ContextDefinition;
 
+@Entity
 public class TimeIntervalDefinition extends ContextDefinition implements TimeIntervals, ContextComparator {
 
+    @PrimaryKey
+    private int uid;
+
+    @ColumnInfo(name = "time_intervals")
     private int[] _timeIntervals;
+
 
     public TimeIntervalDefinition(int[] _timeIntervals) {
         this._timeIntervals = _timeIntervals;

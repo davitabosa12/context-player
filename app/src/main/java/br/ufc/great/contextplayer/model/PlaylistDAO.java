@@ -72,10 +72,6 @@ public class PlaylistDAO {
 
     }
 
-    public List<Playlist> getAllPlaylists(){
-
-    }
-
     public boolean deletePlaylist(String playlistName){
         Uri uri = MediaStore.Audio.Playlists.getContentUri("external");
         String[] selection = {MediaStore.Audio.Playlists._ID};
@@ -197,7 +193,6 @@ public class PlaylistDAO {
         List<Playlist> allPlaylists = new ArrayList<Playlist>();
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
             Playlist p = new Playlist();
-            List<Song> songs = new ArrayList<>();
             long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists._ID));
             String name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.NAME));
             Cursor songList = getPlaylistTracks(id);
@@ -206,8 +201,9 @@ public class PlaylistDAO {
             }
             p.setId(id);
             p.setName(name);
-
+            allPlaylists.add(p);
 
         }
+        return allPlaylists;
     }
 }

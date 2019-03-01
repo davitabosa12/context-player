@@ -9,11 +9,13 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import br.ufc.great.contextplayer.R;
 import br.ufc.great.contextplayer.model.Playlist;
 import smd.ufc.br.easycontext.ContextDefinition;
-import smd.ufc.br.easycontext.definitions.TimeIntervalDefinition;
-import smd.ufc.br.easycontext.definitions.WeatherDefinition;
+import smd.ufc.br.easycontext.persistance.entities.TimeIntervalDefinition;
+import smd.ufc.br.easycontext.persistance.entities.WeatherDefinition;
 
 public class PlaylistBigCard extends CardView {
 
@@ -84,16 +86,16 @@ public class PlaylistBigCard extends CardView {
     public void setPlaylist(Playlist playlist){
         this.playlist = playlist;
         mTitle.setText(playlist.getName());
-        ContextDefinition[] definitions = playlist.getDefinitions();
+        List<ContextDefinition> definitions = playlist.getDefinitions();
         setContextImages(definitions);
 
     }
 
-    private void setContextImages(ContextDefinition[] definitions) {
-        int loopTimes = Math.min(imageContexts.length, definitions.length);
+    private void setContextImages(List<ContextDefinition> definitions) {
+        int loopTimes = Math.min(imageContexts.length, definitions.size());
         int imageIndex = 0;
         for(int i = 0; i < loopTimes; i++){
-            ContextDefinition d = definitions[i];
+            ContextDefinition d = definitions.get(i);
             if(d instanceof WeatherDefinition){
                 imageContexts[imageIndex].setAlpha(1.0f);
                 imageContexts[imageIndex].setImageDrawable(getContext().getDrawable(R.drawable.ic_weather_black_24dp));
