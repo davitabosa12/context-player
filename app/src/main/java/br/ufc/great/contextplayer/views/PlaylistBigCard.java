@@ -9,10 +9,9 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
-
 import br.ufc.great.contextplayer.R;
 import br.ufc.great.contextplayer.model.Playlist;
+import br.ufc.great.contextplayer.model.PlaylistContexts;
 import smd.ufc.br.easycontext.ContextDefinition;
 import smd.ufc.br.easycontext.persistance.entities.TimeIntervalDefinition;
 import smd.ufc.br.easycontext.persistance.entities.WeatherDefinition;
@@ -86,12 +85,12 @@ public class PlaylistBigCard extends CardView {
     public void setPlaylist(Playlist playlist){
         this.playlist = playlist;
         mTitle.setText(playlist.getName());
-        List<ContextDefinition> definitions = playlist.getDefinitions();
+        PlaylistContexts definitions = playlist.getDefinitions();
         setContextImages(definitions);
 
     }
 
-    private void setContextImages(List<ContextDefinition> definitions) {
+    private void setContextImages(PlaylistContexts definitions) {
         int loopTimes = Math.min(imageContexts.length, definitions.size());
         int imageIndex = 0;
         for(int i = 0; i < loopTimes; i++){

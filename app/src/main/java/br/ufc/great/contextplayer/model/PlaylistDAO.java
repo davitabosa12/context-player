@@ -12,18 +12,21 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufc.great.contextplayer.database.ApplicationDb;
+
 public class PlaylistDAO {
 
     private Context context;
     private ContentResolver resolver;
+    private PlaylistContextsDAO definitionsDAO;
     private static final String TAG = "PlaylistDAO";
-    public final Uri PLAYLIST_ROOT_URI = MediaStore.Audio.Playlists.getContentUri("external");
     private static final String[] SELECTION_PLAYLIST = new String[] {MediaStore.Audio.Playlists._ID, MediaStore.Audio.Playlists.NAME};
 
 
     public PlaylistDAO(@NonNull Context context) {
         this.context = context;
         resolver = context.getContentResolver();
+        definitionsDAO = ApplicationDb.getInstance(context).playlistContextsDAO();
 
 
     }
@@ -46,10 +49,20 @@ public class PlaylistDAO {
                 values.put(MediaStore.Audio.Playlists.Members.ARTIST, song.getArtist());
                 values.put(MediaStore.Audio.Playlists.Members.DATA, song.getData());*/
             Uri inserted = resolver.insert(playlistUri, values);
-            Log.d(TAG, "build: inserted song " + song.getTitle() + " with URI " + inserted.toString());
+            if (inserted == null) {
+                Log.e(TAG, "addPlaylist: failed inserting song "+ song.getTitle(), new Exception("yikes!"));
+            } else{
+
+                Log.d(TAG, "build: inserted song " + song.getTitle() + " with URI " + inserted.toString());
+            }
 
 
         }
+        //save information about PlaylistContexts definitions
+        PlaylistContexts definitions = playlist.getDefinitions();
+        definitions.setPlaylistId(playlistId);
+        ApplicationDb.getInstance(context).playlistContextsDAO().insert(definitions);
+
         //TODO: return result of task
         return true;
     }
@@ -59,15 +72,22 @@ public class PlaylistDAO {
         Playlist p = new Playlist();
         Uri playlistUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
         Cursor allSongs = resolver.query(playlistUri, PROJECTION_PLAYLIST, null, null, null);
+        if (allSongs == null) {
+            return null;
+        }
 
 
-            for(allSongs.moveToFirst(); !allSongs.isAfterLast(); allSongs.moveToNext()){
-                long songId = allSongs.getInt(allSongs.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID));
-                Song song = Song.fromAudioId(context, songId);
-                if(song != null)
-                    p.addSong(song);
-            }
-            return p;
+        for(allSongs.moveToFirst(); !allSongs.isAfterLast(); allSongs.moveToNext()){
+            long songId = allSongs.getInt(allSongs.getColumnIndex(MediaStore.Audio.Playlists.Members.AUDIO_ID));
+            Song song = Song.fromAudioId(context, songId);
+            if(song != null)
+                p.addSong(song);
+        }
+        allSongs.close();
+        //get definitions data from Room persistance
+        PlaylistContexts contexts = definitionsDAO.getByPlaylistId(playlistId);
+        p.setDefinitions(contexts);
+        return p;
 
 
     }
@@ -111,26 +131,34 @@ public class PlaylistDAO {
 
     /**
      * Utility to find an ID number from playlist name
-     * @param playlistName
+     * @param playlistName name of the playlist
      * @return the id of the first playlist found
      */
     public long getPlaylistId(String playlistName){
         ContentResolver resolver = context.getContentResolver();
         Uri playlists = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
-        Playlist p = null;
         Cursor c = resolver.query(playlists, new String[] { "*" }, null, null, null);
-        if(c.getCount() <=0)
+
+        if (c == null) {
+
             return -1;
+        }
+
+        if(c.getCount() <=0){
+            c.close();
+            return -1;
+        }
         c.moveToFirst();
         do {
             String currentPlaylistName = c.getString(c.getColumnIndex(MediaStore.Audio.Playlists.NAME));
             if(playlistName.equalsIgnoreCase(currentPlaylistName)){
                 int id = c.getInt(c.getColumnIndex(MediaStore.Audio.Playlists._ID));
+                c.close();
                 return id;
 
             }
         } while (c.moveToNext());
-
+        c.close();
         return -1;
     }
     /**
@@ -152,13 +180,17 @@ public class PlaylistDAO {
 
         Cursor created = resolver.query(createdPlaylistUri, PROJECTION_PLAYLIST, null, null ,null );
 
+        if (created == null) {
+            return -1;
+        }
+
         created.moveToFirst();
         int id = created.getInt(created.getColumnIndex(MediaStore.Audio.Playlists._ID));
         Log.d(TAG, "createBlankPlaylist: created playlist \"" + playlistName + "\" with id " + id);
         return id;
 
     }
-    public static final String[] PROJECTION_PLAYLIST = new String[] {
+    private static final String[] PROJECTION_PLAYLIST = new String[] {
             MediaStore.Audio.Playlists._ID,
             MediaStore.Audio.Playlists.NAME,
             MediaStore.Audio.Playlists.DATA
@@ -190,7 +222,11 @@ public class PlaylistDAO {
         ContentResolver resolver = context.getContentResolver();
         Uri playlistUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
         Cursor cursor = resolver.query(playlistUri, PROJECTION_PLAYLIST, null, null, null);
-        List<Playlist> allPlaylists = new ArrayList<Playlist>();
+        List<Playlist> allPlaylists = new ArrayList<>();
+
+        if (cursor == null) {
+            return null;
+        }
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
             Playlist p = new Playlist();
             long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists._ID));
@@ -204,6 +240,7 @@ public class PlaylistDAO {
             allPlaylists.add(p);
 
         }
+        cursor.close();
         return allPlaylists;
     }
 }

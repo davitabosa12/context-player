@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufc.great.contextplayer.model.Playlist;
+import br.ufc.great.contextplayer.model.PlaylistDAO;
 import br.ufc.great.contextplayer.model.Song;
 
 public class EditarPlaylistActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
@@ -131,7 +132,9 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
     }
 
     private Uri getUriFromString(String playlist) {
-        int playlistId = Playlist.getPlaylistId(this, playlist);
+        PlaylistDAO dao = new PlaylistDAO(this);
+
+        long playlistId = dao.getPlaylistId(playlist);
         return MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
     }
 

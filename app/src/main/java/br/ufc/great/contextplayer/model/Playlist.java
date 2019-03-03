@@ -12,9 +12,11 @@ public class Playlist {
 
     private List<Song> songs;
     private String name;
-    private List<ContextDefinition> definitions;
+    private PlaylistContexts definitions;
     private long id;
     private static String TAG = "Playlist";
+
+
 
     public List<Song> getSongs() {
         return songs;
@@ -24,11 +26,11 @@ public class Playlist {
         return name;
     }
 
-    public List<ContextDefinition> getDefinitions() {
+    public PlaylistContexts getDefinitions() {
         return definitions;
     }
 
-    public void setDefinitions(List<ContextDefinition> definitions) {
+    public void setDefinitions(PlaylistContexts definitions) {
         this.definitions = definitions;
     }
 
@@ -58,11 +60,11 @@ public class Playlist {
     }
 
     public void addContextDefinition(ContextDefinition definition){
-        definitions.add(definition);
+        definitions.getDefinitions().add(definition);
     }
 
     public boolean removeContextDefinition(ContextDefinition definition){
-        return definitions.remove(definition);
+        return definitions.getDefinitions().remove(definition);
     }
 
 

@@ -20,6 +20,10 @@ public abstract class EasyContextDatabase extends RoomDatabase {
     public abstract TimeIntervalDAO timeIntervalDAO();
     public abstract DetectedActivityDAO detectedActivityDAO();
 
+    private EasyContextDatabase(){
+
+    }
+
     public static EasyContextDatabase getInstance(Context context, String dbName) {
         if (instance == null) {
             instance = Room.databaseBuilder(context, EasyContextDatabase.class, dbName).build();
