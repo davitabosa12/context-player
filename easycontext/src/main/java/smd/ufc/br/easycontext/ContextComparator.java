@@ -8,5 +8,5 @@ public interface ContextComparator {
      *
      * @return a value between 0 and 1. 0 when they are different, 1 when they are identical.
      */
-    float compareTo(ContextDefinition otherContext);
+    float calculateConfidence(CurrentContext currentContext);
 }

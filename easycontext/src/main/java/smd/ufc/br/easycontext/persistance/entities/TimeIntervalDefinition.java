@@ -9,6 +9,7 @@ import com.google.android.gms.awareness.state.TimeIntervals;
 
 import smd.ufc.br.easycontext.ContextComparator;
 import smd.ufc.br.easycontext.ContextDefinition;
+import smd.ufc.br.easycontext.CurrentContext;
 
 @Entity
 public class TimeIntervalDefinition extends ContextDefinition implements TimeIntervals, ContextComparator {
@@ -43,12 +44,12 @@ public class TimeIntervalDefinition extends ContextDefinition implements TimeInt
     }
 
     @Override
-    public float compareTo(ContextDefinition otherContext) {
-        //check if ContextDefinition is an instance of TimeIntervalDefinition
-        if(!(otherContext instanceof TimeIntervalDefinition))
+    public float calculateConfidence(CurrentContext currentContext) {
+        TimeIntervals other = currentContext.getTimeIntervals();
+
+        if(other == null)
             return 0;
 
-        TimeIntervalDefinition other = (TimeIntervalDefinition) otherContext;
         float damper = 1.0f / _timeIntervals.length;
         int matching = 0; // number of time intervals that match each other
         for(int t : _timeIntervals){
@@ -57,6 +58,5 @@ public class TimeIntervalDefinition extends ContextDefinition implements TimeInt
             }
         }
         return matching * damper;
-
     }
 }

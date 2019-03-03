@@ -12,6 +12,8 @@ import java.util.List;
 
 import br.ufc.great.contextplayer.R;
 import br.ufc.great.contextplayer.model.Playlist;
+import br.ufc.great.contextplayer.model.PlaylistContexts;
+import br.ufc.great.contextplayer.model.PlaylistDAO;
 import smd.ufc.br.easycontext.CurrentContext;
 import smd.ufc.br.easycontext.Snapshot;
 
@@ -55,6 +57,15 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        //get list of playlists
+        PlaylistDAO playlistDAO = new PlaylistDAO(getContext());
+
+        //TODO: this should be threaded
+        playlists = playlistDAO.getAllPlaylists();
+
+
+
         snapshot = Snapshot.getInstance(getContext());
         snapshot.setCallback(this);
         snapshot.updateContext(Snapshot.WEATHER, Snapshot.TIME_INTERVAL, Snapshot.DETECTED_ACTIVITY);
@@ -88,7 +99,12 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
 
     @Override
     public void onContextUpdate(CurrentContext currentContext) {
-
+        //get playlist confidence
+        for(Playlist playlist : playlists){
+            PlaylistContexts contexts = playlist.getDefinitions();
+            float confidence = contexts.calculateConfidence(currentContext);
+        }
+        //sort it
     }
 
     /**

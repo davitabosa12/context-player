@@ -2,12 +2,12 @@ package br.ufc.great.contextplayer.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.util.List;
 
 import smd.ufc.br.easycontext.ContextDefinition;
+import smd.ufc.br.easycontext.CurrentContext;
 
 @Entity
 public class PlaylistContexts {
@@ -40,5 +40,12 @@ public class PlaylistContexts {
     public List<ContextDefinition> getDefinitions() {
 
         return definitions;
+    }
+
+    public float calculateConfidence(CurrentContext currentContext) {
+        for(ContextDefinition definition : definitions){
+            definition.calculateConfidence(currentContext);
+        }
+        return 0;
     }
 }
