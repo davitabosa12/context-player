@@ -7,7 +7,15 @@ public class PlaylistConfidence implements Comparable<PlaylistConfidence>{
     private float confidence = 0.0f;
     private Playlist playlist;
 
-    public PlaylistConfidence(float confidence, Playlist playlist) {
+    public Playlist getPlaylist() {
+        return playlist;
+    }
+
+    public void setPlaylist(Playlist playlist) {
+        this.playlist = playlist;
+    }
+
+    public PlaylistConfidence(Playlist playlist, float confidence) {
         this.confidence = confidence;
         this.playlist = playlist;
     }

@@ -66,6 +66,11 @@ public class PlaylistBigCard extends CardView {
         init(context);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+    }
+
     private void init(Context context) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -91,10 +96,11 @@ public class PlaylistBigCard extends CardView {
     }
 
     private void setContextImages(PlaylistContexts definitions) {
-        int loopTimes = Math.min(imageContexts.length, definitions.size());
+
+        int numberOfDefinitions = Math.min(imageContexts.length, definitions.getDefinitions().size());
         int imageIndex = 0;
-        for(int i = 0; i < loopTimes; i++){
-            ContextDefinition d = definitions.get(i);
+        for(int i = 0; i < numberOfDefinitions; i++){
+            ContextDefinition d = definitions.getDefinitions().get(i);
             if(d instanceof WeatherDefinition){
                 imageContexts[imageIndex].setAlpha(1.0f);
                 imageContexts[imageIndex].setImageDrawable(getContext().getDrawable(R.drawable.ic_weather_black_24dp));

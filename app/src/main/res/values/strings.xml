@@ -9,4 +9,32 @@
     <string name="title_activity_main2">Main2Activity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string-array name="providers">
+        <item>Weather</item>
+        <item>Activities</item>
+        <item>Time of day</item>
+        <item>Location</item>
+    </string-array>
+
+    <string-array name="weather_conditions">
+        <item>Clear</item>
+        <item>Cloudy</item>
+        <item>Foggy</item>
+        <item>Hazy</item>
+        <item>Icy</item>
+        <item>Rainy</item>
+        <item>Snowy</item>
+        <item>Stormy</item>
+        <item>Windy</item>
+    </string-array>
+
+    <string-array name="time_intervals">
+        <item>Weekday</item>
+        <item>Weekend</item>
+        <item>Holiday</item>
+        <item>Morning</item>
+        <item>Afternoon</item>
+        <item>Evening</item>
+        <item>Night</item>
+    </string-array>
 </resources>

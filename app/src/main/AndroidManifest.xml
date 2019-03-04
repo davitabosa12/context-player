@@ -10,29 +10,32 @@
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
     <application
-    android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:roundIcon="@mipmap/ic_launcher_round"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme">
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
             android:value="AIzaSyDKAL0CunUe7Y-gugUamFAq3xnYcUcvTM4" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCspF7ooDnOJql3cBnyWiPkbdI7EIa9ByA" />
-        <!--<meta-data
+        <!--
+            <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
-            android:value="AIzaSyAEFWIMFnDY58zZQzbsGefGd73ztX1aRKo" />-->
+            android:value="AIzaSyAEFWIMFnDY58zZQzbsGefGd73ztX1aRKo" />
+        -->
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <activity
-        android:name=".SplashActivity"
-        android:configChanges="orientation|keyboardHidden|screenSize"
-        android:label="@string/app_name"
+            android:name=".SplashActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,7 +55,8 @@
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SelectContext" />
     </application>
 
 </manifest>

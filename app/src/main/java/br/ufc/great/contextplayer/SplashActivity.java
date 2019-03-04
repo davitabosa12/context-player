@@ -157,15 +157,15 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkAndCreateDefaultPlaylists() {
-        for(String playlistName : DEFAULT_PLAYLISTS) {
-            if (Playlist.getPlaylistId(this, playlistName) == -1) {
-                //playlist doesn't exist, create a new one
-
-                long id = Playlist.createBlankPlaylist(this, playlistName);
-                Log.d(TAG, "checkAndCreateDefaultPlaylists: created " + playlistName + " with id = " + id);
-
-            }
-        }
+//        for(String playlistName : DEFAULT_PLAYLISTS) {
+//            if (Playlist.getPlaylistId(this, playlistName) == -1) {
+//                //playlist doesn't exist, create a new one
+//
+//                long id = Playlist.createBlankPlaylist(this, playlistName);
+//                Log.d(TAG, "checkAndCreateDefaultPlaylists: created " + playlistName + " with id = " + id);
+//
+//            }
+//        }
     }
 
     public static String[] DEFAULT_PLAYLISTS = {"chuvoso", "ensolarado", "carro", "treino", "nuvens"};

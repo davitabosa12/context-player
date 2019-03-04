@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
@@ -29,6 +31,10 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
     private List<Song> selectedSongs;
     private Button btnUpdatePlaylist;
     private ArrayAdapter mAdapter;
+    private CardView mCardContext;
+
+    private static final int REQUEST_CODE_CONTEXT = 304;
+
     private static String TAG = "EditarPlaylistActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,9 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
         allSongs = new MusicScanner(this).scan();
         selectedSongs = new ArrayList<>();
         mListView.setOnItemClickListener(this);
+        mCardContext = findViewById(R.id.card_context);
+        mCardContext.setOnClickListener(this);
+
 
         btnUpdatePlaylist = findViewById(R.id.btn_update_playlist);
         btnUpdatePlaylist.setOnClickListener(this);
@@ -98,6 +107,9 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
             case R.id.btn_update_playlist:
                 savePlaylist();
                 break;
+            case R.id.card_context:
+                Intent i = new Intent(this, SelectContextActivity.class);
+                startActivityForResult(i, REQUEST_CODE_CONTEXT);
         }
     }
 
@@ -154,5 +166,15 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         updateSelectedMusic();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_CONTEXT){
+            if(resultCode == RESULT_OK){
+
+            }
+        }
     }
 }

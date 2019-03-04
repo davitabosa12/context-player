@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 
 import com.google.android.gms.awareness.state.Weather;
 
+import java.util.Arrays;
+
 import smd.ufc.br.easycontext.ContextDefinition;
 import smd.ufc.br.easycontext.CurrentContext;
 
@@ -60,7 +62,7 @@ public class WeatherDefinition implements Weather, ContextDefinition  {
     }
 
     public WeatherDefinition(){
-
+        this._conditions = new int[0];
     }
 
 
@@ -126,6 +128,11 @@ public class WeatherDefinition implements Weather, ContextDefinition  {
 
     public void setConditions(int ...conditions) {
         this._conditions = conditions;
+    }
+    public void addCondition(int condition){
+
+        _conditions = Arrays.copyOf(_conditions, _conditions.length + 1);
+        _conditions[_conditions.length -1] = condition;
     }
 
     @Override

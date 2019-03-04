@@ -7,6 +7,8 @@ import android.arch.persistence.room.PrimaryKey;
 import com.google.android.gms.awareness.state.TimeIntervals;
 
 
+import java.util.Arrays;
+
 import smd.ufc.br.easycontext.ContextDefinition;
 import smd.ufc.br.easycontext.CurrentContext;
 
@@ -25,12 +27,18 @@ public class TimeIntervalDefinition implements TimeIntervals, ContextDefinition 
     }
 
     public TimeIntervalDefinition() {
+        this._timeIntervals = new int[0];
     }
 
     @Override
     public int[] getTimeIntervals() {
 
         return _timeIntervals;
+    }
+
+    public void addTimeInterval(int interval){
+        this._timeIntervals = Arrays.copyOf(_timeIntervals, _timeIntervals.length + 1);
+        _timeIntervals[_timeIntervals.length - 1] = interval;
     }
 
     @Override
