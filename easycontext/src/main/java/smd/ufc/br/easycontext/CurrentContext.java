@@ -1,28 +1,14 @@
 package smd.ufc.br.easycontext;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 
-import com.google.android.gms.awareness.Awareness;
-import com.google.android.gms.awareness.SnapshotClient;
-import com.google.android.gms.awareness.snapshot.DetectedActivityResponse;
-import com.google.android.gms.awareness.snapshot.TimeIntervalsResponse;
-import com.google.android.gms.awareness.snapshot.WeatherResponse;
-import com.google.android.gms.awareness.snapshot.WeatherResult;
 import com.google.android.gms.awareness.state.TimeIntervals;
 import com.google.android.gms.awareness.state.Weather;
 import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.tasks.Task;
 
 import java.io.Serializable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.List;
 
 /**
  * CurrentContext is the current context that the device is at.
@@ -36,7 +22,18 @@ public class CurrentContext implements Serializable {
     private TimeIntervals timeIntervals;
     private Location location;
     private PlaceLikelihood placeLikelihood;
-    private DetectedActivity detectedActivity;
+    private DetectedActivity mostProbableActivity;
+
+    public List<DetectedActivity> getDetectedActivities() {
+        return detectedActivities;
+    }
+
+    public CurrentContext setDetectedActivities(List<DetectedActivity> detectedActivities) {
+        this.detectedActivities = detectedActivities;
+        return this;
+    }
+
+    private List<DetectedActivity> detectedActivities;
 
     CurrentContext setWeather(Weather weather) {
         this.weather = weather;
@@ -58,8 +55,8 @@ public class CurrentContext implements Serializable {
         return this;
     }
 
-    CurrentContext setDetectedActivity(DetectedActivity detectedActivity) {
-        this.detectedActivity = detectedActivity;
+    CurrentContext setMostProbableActivity(DetectedActivity mostProbableActivity) {
+        this.mostProbableActivity = mostProbableActivity;
         return this;
     }
 
@@ -79,8 +76,8 @@ public class CurrentContext implements Serializable {
         return placeLikelihood;
     }
 
-    public DetectedActivity getDetectedActivity() {
-        return detectedActivity;
+    public DetectedActivity getMostProbableActivity() {
+        return mostProbableActivity;
     }
 
     CurrentContext() {
@@ -88,7 +85,7 @@ public class CurrentContext implements Serializable {
         timeIntervals = null;
         location = null;
         placeLikelihood = null;
-        detectedActivity = null;
+        mostProbableActivity = null;
     }
 
     @Override
@@ -116,10 +113,10 @@ public class CurrentContext implements Serializable {
         }
         builder.append("\nDetected Activity: ");
 
-        if (detectedActivity == null) {
+        if (mostProbableActivity == null) {
             builder.append("null");
         } else {
-            builder.append(detectedActivity.toString());
+            builder.append(mostProbableActivity.toString());
         }
         builder.append("\nPlace Likelihood: ");
 

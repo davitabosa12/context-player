@@ -4,35 +4,53 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.util.Arrays;
+import com.google.android.gms.location.DetectedActivity;
+
+import java.util.List;
 
 import smd.ufc.br.easycontext.ContextDefinition;
+import smd.ufc.br.easycontext.CurrentContext;
 
 @Entity
-public class DetectedActivityDefinition extends ContextDefinition {
+public class DetectedActivityDefinition extends DetectedActivity implements ContextDefinition {
 
     @PrimaryKey
     private int uid;
 
-    @ColumnInfo(name = "activityTypes")
-    int[] activityTypes;
+    @ColumnInfo(name = "activityType")
+    int activityType;
 
-    public DetectedActivityDefinition setActivityTypes(int... activityTypes) {
-        this.activityTypes = activityTypes;
+    public DetectedActivityDefinition setActivityType(int activityType) {
+        this.activityType = activityType;
         return this;
     }
 
 
-    public int[] getActivityTypes() {
-        return activityTypes;
+
+    public int getActivityType() {
+        return activityType;
     }
 
-    public DetectedActivityDefinition() {
+    public DetectedActivityDefinition(int activityType) {
+        super(activityType, 100); //we always want the maximum likelihood!
     }
-
 
     @Override
-    public float compareTo(ContextDefinition otherContext) {
+    public float calculateConfidence(CurrentContext currentContext) {
+        //
+        // DetectedActivity other = currentContext.getMostProbableActivity();
+        List<DetectedActivity> detectedActivities = currentContext.getDetectedActivities();
+
+
+        if(detectedActivities == null)
+            return 0;
+
+
+        for(DetectedActivity da : detectedActivities){
+                if(da.getType() == activityType){
+                    return da.getConfidence() / 100.0f;
+                }
+        }
         return 0;
     }
 }

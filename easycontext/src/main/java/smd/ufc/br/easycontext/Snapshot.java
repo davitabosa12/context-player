@@ -164,7 +164,8 @@ public class Snapshot {
                         currentContext.setLocation(response.getLocation());
                     } else if(t.getResult() instanceof DetectedActivityResponse){
                         DetectedActivityResponse response = (DetectedActivityResponse) t.getResult();
-                        currentContext.setDetectedActivity(response.getActivityRecognitionResult().getMostProbableActivity());
+                        currentContext.setMostProbableActivity(response.getActivityRecognitionResult().getMostProbableActivity());
+                        currentContext.setDetectedActivities(response.getActivityRecognitionResult().getProbableActivities());
                     }
                 }
                 callback.onContextUpdate(currentContext);

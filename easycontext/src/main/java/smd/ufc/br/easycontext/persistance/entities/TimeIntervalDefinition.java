@@ -7,12 +7,11 @@ import android.arch.persistence.room.PrimaryKey;
 import com.google.android.gms.awareness.state.TimeIntervals;
 
 
-import smd.ufc.br.easycontext.ContextComparator;
 import smd.ufc.br.easycontext.ContextDefinition;
 import smd.ufc.br.easycontext.CurrentContext;
 
 @Entity
-public class TimeIntervalDefinition extends ContextDefinition implements TimeIntervals, ContextComparator {
+public class TimeIntervalDefinition implements TimeIntervals, ContextDefinition  {
 
     @PrimaryKey
     private int uid;

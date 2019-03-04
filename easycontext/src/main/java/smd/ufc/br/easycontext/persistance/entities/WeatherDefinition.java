@@ -7,11 +7,11 @@ import android.support.annotation.Nullable;
 
 import com.google.android.gms.awareness.state.Weather;
 
-import smd.ufc.br.easycontext.ContextComparator;
 import smd.ufc.br.easycontext.ContextDefinition;
+import smd.ufc.br.easycontext.CurrentContext;
 
 @Entity
-public class WeatherDefinition extends ContextDefinition implements ContextComparator, Weather {
+public class WeatherDefinition implements Weather, ContextDefinition  {
 
     // --------------------- FIELDS ------------------------ //
     @PrimaryKey
@@ -64,27 +64,6 @@ public class WeatherDefinition extends ContextDefinition implements ContextCompa
     }
 
 
-    @Override
-    public float compareTo(ContextDefinition otherContext) {
-        WeatherDefinition other;
-        //return 0 if different types
-        try{
-
-            other = (WeatherDefinition) otherContext;
-        } catch (ClassCastException ex){
-            return 0; //not the same type...
-        }
-
-        //check every field and compare each other
-        //TODO: compare with ALL fields.
-        //HACK: only comparing the weather conditions;
-        float conditions = compareWeatherConditions((other.getConditions()));
-
-
-
-        return conditions;
-
-    }
 
     private float compareWeatherConditions(int[] otherConditions) {
         /**
@@ -147,5 +126,22 @@ public class WeatherDefinition extends ContextDefinition implements ContextCompa
 
     public void setConditions(int ...conditions) {
         this._conditions = conditions;
+    }
+
+    @Override
+    public float calculateConfidence(CurrentContext currentContext) {
+        Weather other = currentContext.getWeather();
+        if (other == null) {
+            return 0;
+        }
+        //return 0 if different types
+
+        //check every field and compare each other
+        //TODO: compare with ALL fields.
+        //HACK: only comparing the weather conditions;
+        float conditions = compareWeatherConditions((other.getConditions()));
+
+
+        return conditions;
     }
 }
