@@ -19,7 +19,8 @@ public abstract class ApplicationDb extends RoomDatabase {
 
     public static ApplicationDb getInstance(Context context) {
         if (instance == null) {
-            instance = Room.databaseBuilder(context, ApplicationDb.class, DB_NAME).allowMainThreadQueries().build();
+            instance = Room.databaseBuilder(context, ApplicationDb.class, DB_NAME).allowMainThreadQueries()
+                    .fallbackToDestructiveMigration().build();
         }
         return instance;
     }

@@ -1,12 +1,15 @@
 package br.ufc.great.contextplayer.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +41,10 @@ import smd.ufc.br.easycontext.Snapshot;
  * create an instance of this fragment.
  */
 public class SelectPlaylistFragment extends Fragment implements Snapshot.OnContextUpdate, View.OnClickListener, View.OnLongClickListener {
+
+    public static final String ACTION_UPDATE = "update_recalculate";
+    private static final String  TAG = "SelectPlaylistFragment";
+
     private OnFragmentInteractionListener mListener;
     private Snapshot snapshot;
     private List<Playlist> playlists;
@@ -46,6 +53,14 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
     private PlaylistBigCard mMostRecommended, mSecondRecommended, mThirdRecommended;
     private LinearLayout mFourthOnwards, mPreloader;
     private ConstraintLayout mNoPlaylists;
+    private CurrentContext mLastContext;
+
+    private BroadcastReceiver updateRecalculate = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            recalculateAndUpdate();
+        }
+    };
 
     public SelectPlaylistFragment() {
         // Required empty public constructor
@@ -67,6 +82,12 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //get list of playlists
+        PlaylistDAO playlistDAO = new PlaylistDAO(getContext());
+
+        //TODO: this should be threaded
+        playlists = playlistDAO.getAllPlaylists();
+        playlistConfidences = new ArrayList<>();
 
     }
 
@@ -74,12 +95,7 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //get list of playlists
-        PlaylistDAO playlistDAO = new PlaylistDAO(getContext());
 
-        //TODO: this should be threaded
-        playlists = playlistDAO.getAllPlaylists();
-        playlistConfidences = new ArrayList<>();
 
 
         // Inflate the layout for this fragment
@@ -123,30 +139,40 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
             throw new RuntimeException(context.getPackageName()
                     + " must implement OnFragmentInteractionListener");
         }
+
+        getContext().registerReceiver(updateRecalculate, new IntentFilter(ACTION_UPDATE));
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        getContext().unregisterReceiver(updateRecalculate);
     }
 
     @Override
     public void onContextUpdate(CurrentContext currentContext) {
-        //get playlist confidence
+        mLastContext = currentContext;
+        recalculateAndUpdate();
+    }
+
+    private void recalculateAndUpdate(){
+        playlistConfidences.clear();
+        playlists = new PlaylistDAO(getContext()).getAllPlaylists();
         for(Playlist playlist : playlists){
             PlaylistContexts contexts = playlist.getDefinitions();
             float confidence;
             if (contexts == null) {
                 confidence = 0.0f;
             }else{
-                confidence = contexts.calculateConfidence(currentContext);
+                confidence = contexts.calculateConfidence(mLastContext);
             }
+            Log.d(TAG, "recalculateAndUpdate: playlist " + playlist.getName() + " with confidence = " + confidence);
             playlistConfidences.add(new PlaylistConfidence(playlist, confidence));
         }
         //sort it descending (reverse order)
         Collections.sort(playlistConfidences, Collections.<PlaylistConfidence>reverseOrder());
-        playlists.clear();
+        playlists = new ArrayList<>();
         for(PlaylistConfidence confidence : playlistConfidences){
             playlists.add(confidence.getPlaylist());
         }
@@ -180,6 +206,7 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
                 mThirdRecommended.setVisibility(View.GONE);
             }
             if(playlists.size() >= 4){
+                Log.d(TAG, "updateUI: playlist size: " + playlists.size());
                 mFourthOnwards.removeAllViews();
                 for(int i = 3; i < playlists.size(); i++){
                     Button b = new Button(getContext());
@@ -199,6 +226,9 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
                         @Override
                         public boolean onLongClick(View view) {
                             Toast.makeText(getContext(),"Editing " + p.getName(), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getContext(), EditarPlaylistActivity.class);
+                            intent.putExtra("playlist_id", p.getId());
+                            startActivity(intent);
                             return true;
                         }
                     });

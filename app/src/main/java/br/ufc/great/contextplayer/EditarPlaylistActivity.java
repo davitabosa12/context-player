@@ -1,11 +1,13 @@
 package br.ufc.great.contextplayer;
 
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -16,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +32,14 @@ import smd.ufc.br.easycontext.persistance.entities.LocationDefinition;
 import smd.ufc.br.easycontext.persistance.entities.TimeIntervalDefinition;
 import smd.ufc.br.easycontext.persistance.entities.WeatherDefinition;
 
+import static br.ufc.great.contextplayer.fragments.SelectPlaylistFragment.ACTION_UPDATE;
+
 public class EditarPlaylistActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private ListView mListView;
     private List<Song> allSongs;
     private List<Song> selectedSongs;
-    private Button btnUpdatePlaylist;
+    private Button btnUpdatePlaylist, btnDelete;
     private ArrayAdapter mAdapter;
     private CardView mCardContext;
     private Playlist thePlaylist;
@@ -63,6 +68,9 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
         btnUpdatePlaylist = findViewById(R.id.btn_update_playlist);
         btnUpdatePlaylist.setOnClickListener(this);
 
+        btnDelete = findViewById(R.id.btn_delete);
+        btnDelete.setOnClickListener(this);
+
 
 
 
@@ -76,7 +84,6 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
     }
 
     private void checkSongsFromPlaylist() {
-        ContentResolver resolver = getContentResolver();
 
 
 
@@ -101,7 +108,32 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
             case R.id.card_context:
                 Intent i = new Intent(this, SelectContextActivity.class);
                 startActivityForResult(i, REQUEST_CODE_CONTEXT);
+                break;
+            case R.id.btn_delete:
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setTitle("Delete " + thePlaylist.getName())
+                        .setMessage("Are you sure?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                performDelete();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .create();
+                dialog.show();
+                break;
         }
+    }
+
+    private void performDelete() {
+        PlaylistDAO dao = new PlaylistDAO(this);
+        if(dao.deletePlaylist(thePlaylist.getId())){
+            Toast.makeText(this, thePlaylist.getName() + " removed.", Toast.LENGTH_SHORT).show();
+            sendBroadcast(new Intent(ACTION_UPDATE));
+            finish();
+        }
+
     }
 
     private void savePlaylist() {
@@ -109,10 +141,14 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
         PlaylistDAO dao = new PlaylistDAO(this);
         Playlist newPlaylist = new Playlist();
         newPlaylist.setId(thePlaylist.getId());
+        newPlaylist.setName(thePlaylist.getName());
+        newPlaylist.setDefinitions(thePlaylist.getDefinitions());
         for(Song s : selectedSongs){
             newPlaylist.addSong(s);
         }
         dao.updatePlaylist(newPlaylist, thePlaylist.getId());
+        sendBroadcast(new Intent(ACTION_UPDATE));
+        finish();
 
 
         /*ContentResolver resolver = getContentResolver();

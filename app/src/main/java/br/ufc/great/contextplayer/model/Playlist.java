@@ -46,8 +46,9 @@ public class Playlist {
 
     public Playlist(){
         this.name = null;
-        this.songs = null;
+        this.songs = new ArrayList<>();
         this.id = -1; //invalid id
+        this.definitions = new PlaylistContexts();
     }
 
 

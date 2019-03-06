@@ -94,6 +94,10 @@ public class PickWeatherFragment extends DialogFragment implements DialogInterfa
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Weather");
         String[] conditions = getResources().getStringArray(R.array.weather_conditions);
+        //initialize all with false
+        for(int i = 0; i< conditions.length; i++){
+            mItems.put(i, false);
+        }
         builder.setMultiChoiceItems(conditions, null, this);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -119,6 +123,7 @@ public class PickWeatherFragment extends DialogFragment implements DialogInterfa
 
     @Override
     public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+
         mItems.put(i, b);
     }
 

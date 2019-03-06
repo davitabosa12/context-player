@@ -144,12 +144,12 @@ public class PlaylistDAO {
 
     }
 
-    public boolean deletePlaylist(String playlistName){
+    public boolean deletePlaylist(long playlistId){
         Uri uri = MediaStore.Audio.Playlists.getContentUri("external");
         String[] selection = {MediaStore.Audio.Playlists._ID};
-        long id = getPlaylistId(playlistName);
-        String where = id + " = " + MediaStore.Audio.Playlists._ID;
-        int result = resolver.delete(uri, where, selection);
+
+        String where = playlistId + " = " + MediaStore.Audio.Playlists._ID;
+        int result = resolver.delete(uri, where, null);
         return result > 0;
     }
 
@@ -161,7 +161,7 @@ public class PlaylistDAO {
         ContentValues playlistValues = new ContentValues();
         playlistValues.put(MediaStore.Audio.Playlists.NAME, newPlaylist.getName());
         String where = MediaStore.Audio.Playlists._ID + "=" + playlistId; // WHERE _id = playlistId
-        int result1 = resolver.update(playlistsUri, playlistValues, where, SELECTION_PLAYLIST);
+        int result1 = resolver.update(playlistsUri, playlistValues, where, null);
 
         //second: update song list at membersUri:
         int deletedRows = resolver.delete(membersUri, null, null); //clear playlist songs
@@ -233,6 +233,9 @@ public class PlaylistDAO {
         values.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis());
 
         Uri createdPlaylistUri = resolver.insert(playlistUri, values);
+        if(createdPlaylistUri == null){
+            return -1;
+        }
 
         Cursor created = resolver.query(createdPlaylistUri, PROJECTION_PLAYLIST, null, null ,null );
 
@@ -243,6 +246,7 @@ public class PlaylistDAO {
         created.moveToFirst();
         int id = created.getInt(created.getColumnIndex(MediaStore.Audio.Playlists._ID));
         Log.d(TAG, "createBlankPlaylist: created playlist \"" + playlistName + "\" with id " + id);
+        created.close();
         return id;
 
     }
@@ -267,10 +271,15 @@ public class PlaylistDAO {
         String location = MediaStore.Audio.Playlists.Members.DATA;
         String composer = MediaStore.Audio.Playlists.Members.COMPOSER;
         String playorder = MediaStore.Audio.Playlists.Members.PLAY_ORDER;
-
+        String display_name = MediaStore.Audio.Media.DISPLAY_NAME;
+        String date_added = MediaStore.Audio.Media.DATE_ADDED;
+        String size = MediaStore.Audio.Media.SIZE;
+        String track = MediaStore.Audio.Media.TRACK;
+        String year = MediaStore.Audio.Media.YEAR;
         String date_modified = MediaStore.Audio.Playlists.Members.DATE_MODIFIED;
+
         String[] columns = {_id, audio_id, artist, album_id, album, title, duration,
-                location, date_modified, playorder, composer};
+                location, date_modified, date_added, size, display_name, track, year, playorder, composer};
         return resolver.query(newuri, columns, null, null, null);
     }
 

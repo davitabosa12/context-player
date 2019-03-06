@@ -2,6 +2,7 @@ package br.ufc.great.contextplayer.model;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import smd.ufc.br.easycontext.ContextDefinition;
@@ -18,6 +19,7 @@ public class PlaylistContexts implements Serializable {
     long playlistId;
 
     public PlaylistContexts() {
+        definitions = new ArrayList<>();
     }
 
     public long getPlaylistId() {
@@ -45,6 +47,7 @@ public class PlaylistContexts implements Serializable {
         }
         float result = 0.0f;
         for(ContextDefinition definition : definitions){
+            if(definition== null) continue;
             result += definition.calculateConfidence(currentContext);
         }
         return result;

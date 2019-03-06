@@ -50,6 +50,11 @@ public class PickTimeIntervalDialog extends DialogFragment implements DialogInte
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         builder.setTitle("Time");
+        String[] intervals = getContext().getResources().getStringArray(R.array.time_intervals);
+        //initialize mItems
+        for(int i = 0; i < intervals.length; i++){
+            mItems.put(i, false);
+        }
         builder.setMultiChoiceItems(R.array.time_intervals, null, this);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override

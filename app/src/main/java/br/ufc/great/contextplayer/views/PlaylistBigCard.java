@@ -76,15 +76,22 @@ public class PlaylistBigCard extends CardView {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.big_cardview, this);
 
+        imageContexts = new ImageView[3];
         onFinishInflate();
 
-        imageContexts = new ImageView[3];
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mTitle = findViewById(R.id.txv_title);
+        imageContexts[0] = findViewById(R.id.img_context1);
+        imageContexts[0].setAlpha(0.0f);
+        imageContexts[1] = findViewById(R.id.img_context2);
+        imageContexts[1].setAlpha(0.0f);
+        imageContexts[2] = findViewById(R.id.img_context3);
+        imageContexts[2].setAlpha(0.0f);
+
     }
 
     public void setPlaylist(Playlist playlist){

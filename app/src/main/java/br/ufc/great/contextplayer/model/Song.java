@@ -6,9 +6,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 //POJO  que representa uma musica
 public class Song {
+
+    private static final String TAG = "Song";
+
+
     private String album;
     private String artist;
     private String composer;

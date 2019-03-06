@@ -45,8 +45,8 @@ public class PlaylistContextsDAO {
         timeIntervalDAO = database.timeIntervalDAO();
         weatherDAO = database.weatherDefinitionDAO();
         activityDAO = database.detectedActivityDAO();
-        //TODO: implement location DAO
-        locationDAO = null;
+
+        locationDAO = database.locationDAO();
 
     }
 
@@ -96,8 +96,8 @@ public class PlaylistContextsDAO {
                 long id = weatherDAO.insert((WeatherDefinition) definition);
                 join.setWeatherId(id);
             } else if(definition instanceof LocationDefinition){
-                //TODO: Implement this
-                Log.d(TAG, "Tried to save to Location");
+                long id = locationDAO.insert((LocationDefinition) definition);
+                join.setLocationId(id);
             } else if(definition instanceof DetectedActivityDefinition){
 
                 long id = activityDAO.insert((DetectedActivityDefinition) definition);

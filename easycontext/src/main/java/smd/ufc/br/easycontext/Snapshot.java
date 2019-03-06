@@ -87,7 +87,6 @@ public class Snapshot {
     /**************************************************************************************************/
     public void setCallback(OnContextUpdate callback){
         this.callback = callback;
-        callback.onContextUpdate(currentContext);
     }
     private Task<WeatherResponse> updateWeather() {
         @SuppressLint("MissingPermission")

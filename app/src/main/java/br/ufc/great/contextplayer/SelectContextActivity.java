@@ -50,18 +50,18 @@ public class SelectContextActivity extends AppCompatActivity implements AdapterV
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         DialogFragment fragment;
         switch (i){
-            case 1: //Weather
+            case 0: //Weather
                 fragment = PickWeatherFragment.newInstance();
                 fragment.show(ft, "weather_dialog");
                 break;
-            case 2: // Activities
+            case 1: // Activities
                 Toast.makeText(this, "Activities not supported yet", Toast.LENGTH_SHORT).show();
                 break;
-            case 3: // Time of day
+            case 2: // Time of day
                 fragment = PickTimeIntervalDialog.newInstance();
                 fragment.show(ft, "ti_dialog");
                 break;
-            case 4: //Location
+            case 3: //Location
                 Toast.makeText(this, "Location not supported yet", Toast.LENGTH_SHORT).show();
                 break;
         }

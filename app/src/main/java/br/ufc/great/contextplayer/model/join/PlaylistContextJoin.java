@@ -24,6 +24,13 @@ public class PlaylistContextJoin {
     @ColumnInfo
     long playlistId;
 
+    public PlaylistContextJoin() {
+        this.timeIntervalId = -1;
+        this.weatherId = -1;
+        this.locationId = -1;
+        this.activityId = -1;
+    }
+
     public long getPlaylistId() {
         return playlistId;
     }

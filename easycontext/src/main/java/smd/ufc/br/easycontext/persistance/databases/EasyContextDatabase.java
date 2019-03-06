@@ -16,7 +16,7 @@ import smd.ufc.br.easycontext.persistance.entities.TimeIntervalDefinition;
 import smd.ufc.br.easycontext.persistance.entities.WeatherDefinition;
 
 @Database(entities = {DetectedActivityDefinition.class, WeatherDefinition.class, TimeIntervalDefinition.class, LocationDefinition.class},
-        version = 1, exportSchema = false)
+        version = 2, exportSchema = false)
 public abstract class EasyContextDatabase extends RoomDatabase {
 
     private static EasyContextDatabase instance;
@@ -33,7 +33,8 @@ public abstract class EasyContextDatabase extends RoomDatabase {
 
     public static EasyContextDatabase getInstance(Context context, String dbName) {
         if (instance == null) {
-            instance = Room.databaseBuilder(context, EasyContextDatabase.class, dbName).allowMainThreadQueries().build();
+            instance = Room.databaseBuilder(context, EasyContextDatabase.class, dbName).allowMainThreadQueries()
+                    .fallbackToDestructiveMigration().build();
         }
 
         return instance;

@@ -6,6 +6,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -36,7 +37,7 @@ import br.ufc.great.contextplayer.services.PlaybackService;
 import smd.ufc.br.easycontext.CurrentContext;
 import smd.ufc.br.easycontext.Snapshot;
 
-public class Main2Activity extends AppCompatActivity implements OnFragmentInteractionListener, Snapshot.OnContextUpdate {
+public class Main2Activity extends AppCompatActivity implements OnFragmentInteractionListener, Snapshot.OnContextUpdate, View.OnClickListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -57,6 +58,7 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
 
     //music player service
     private PlaybackService musicService;
+    private FloatingActionButton fabPlaylist;
     private boolean musicBound = false;
     private Intent playIntent;
 
@@ -80,6 +82,8 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         mViewPager.setAdapter(mainPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
         Snapshot snapshot = Snapshot.getInstance(this);
+        fabPlaylist = findViewById(R.id.fab_new_playlist);
+        fabPlaylist.setOnClickListener(this);
 
        /* try {
             //snapshot.updateContext(Snapshot.WEATHER, Snapshot.TIME_INTERVAL, Snapshot.DETECTED_ACTIVITY);
@@ -177,4 +181,15 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         Log.d(TAG, "onContextUpdate: " + currentContext.toString());
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.fab_new_playlist:
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                Fragment createPlaylist = CreatePlaylistDialog.newInstance();
+                ((CreatePlaylistDialog) createPlaylist).show(ft, "create_playlist");
+                break;
+
+        }
+    }
 }
