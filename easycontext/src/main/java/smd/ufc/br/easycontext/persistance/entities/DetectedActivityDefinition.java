@@ -12,27 +12,35 @@ import smd.ufc.br.easycontext.ContextDefinition;
 import smd.ufc.br.easycontext.CurrentContext;
 
 @Entity
-public class DetectedActivityDefinition extends DetectedActivity implements ContextDefinition {
+public class DetectedActivityDefinition implements ContextDefinition {
 
     @PrimaryKey(autoGenerate = true)
     private int uid;
 
-    @ColumnInfo(name = "activityType")
-    int activityType;
+    @ColumnInfo
+    private int activityType;
 
-    public DetectedActivityDefinition setActivityType(int activityType) {
+
+
+    public DetectedActivityDefinition(int activityType) {
         this.activityType = activityType;
-        return this;
     }
 
+    //GETTERS SETTERS
+    public int getUid() {
+        return uid;
+    }
 
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
 
     public int getActivityType() {
         return activityType;
     }
 
-    public DetectedActivityDefinition(int activityType) {
-        super(activityType, 100); //we always want the maximum likelihood!
+    public void setActivityType(int activityType) {
+        this.activityType = activityType;
     }
 
     @Override
@@ -53,4 +61,6 @@ public class DetectedActivityDefinition extends DetectedActivity implements Cont
         }
         return 0;
     }
+
+
 }

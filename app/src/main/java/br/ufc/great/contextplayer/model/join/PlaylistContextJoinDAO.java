@@ -12,14 +12,14 @@ import java.util.List;
 @Dao
 public interface PlaylistContextJoinDAO {
 
-    @Query("SELECT * FROM playlistcontextjoin WHERE playlist_id == :playlistId")
+    @Query("SELECT * FROM playlistcontextjoin WHERE playlistId == :playlistId")
     List<PlaylistContextJoin> getPlaylistContextPair(long playlistId);
 
     @Insert
     long insert(PlaylistContextJoin join);
 
-    @Query("DELETE FROM playlistcontextjoin WHERE playlist_id == :playlistId")
-    long deleteAll(long playlistId);
+    @Query("DELETE FROM playlistcontextjoin WHERE playlistId == :playlistId")
+    int deleteAll(long playlistId);
 
     @Delete
     void delete(PlaylistContextJoin join);

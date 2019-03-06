@@ -1,6 +1,7 @@
 package br.ufc.great.contextplayer.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import br.ufc.great.contextplayer.EditarPlaylistActivity;
 import br.ufc.great.contextplayer.R;
 import br.ufc.great.contextplayer.model.Playlist;
 import br.ufc.great.contextplayer.model.PlaylistConfidence;
@@ -31,12 +33,11 @@ import smd.ufc.br.easycontext.Snapshot;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SelectPlaylistFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link SelectPlaylistFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SelectPlaylistFragment extends Fragment implements Snapshot.OnContextUpdate, View.OnClickListener {
+public class SelectPlaylistFragment extends Fragment implements Snapshot.OnContextUpdate, View.OnClickListener, View.OnLongClickListener {
     private OnFragmentInteractionListener mListener;
     private Snapshot snapshot;
     private List<Playlist> playlists;
@@ -81,11 +82,10 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
         playlistConfidences = new ArrayList<>();
 
 
-        snapshot = Snapshot.getInstance(getContext());
-        snapshot.setCallback(this);
-        snapshot.updateContext(Snapshot.WEATHER, Snapshot.TIME_INTERVAL, Snapshot.DETECTED_ACTIVITY);
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_playlist_recommendation, container, false);
+
+
         mMostRecommended = rootView.findViewById(R.id.card_first);
         mSecondRecommended = rootView.findViewById(R.id.card_second);
         mThirdRecommended = rootView.findViewById(R.id.card_third);
@@ -103,16 +103,16 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
         mSecondRecommended.setOnClickListener(this);
         mThirdRecommended.setOnClickListener(this);
 
+        mMostRecommended.setOnLongClickListener(this);
+        mSecondRecommended.setOnLongClickListener(this);
+        mThirdRecommended.setOnLongClickListener(this);
 
+        snapshot = Snapshot.getInstance(getContext());
+        snapshot.setCallback(this);
+        snapshot.updateContext(Snapshot.WEATHER, Snapshot.TIME_INTERVAL, Snapshot.DETECTED_ACTIVITY);
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -120,7 +120,7 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
+            throw new RuntimeException(context.getPackageName()
                     + " must implement OnFragmentInteractionListener");
         }
     }
@@ -170,15 +170,20 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
             if(playlists.size() >= 2){
 
                 mSecondRecommended.setPlaylist(playlistConfidences.get(1).getPlaylist());
+            }else {
+                mSecondRecommended.setVisibility(View.GONE);
             }
             if(playlists.size() >= 3){
 
                 mThirdRecommended.setPlaylist(playlistConfidences.get(2).getPlaylist());
+            } else {
+                mThirdRecommended.setVisibility(View.GONE);
             }
             if(playlists.size() >= 4){
+                mFourthOnwards.removeAllViews();
                 for(int i = 3; i < playlists.size(); i++){
                     Button b = new Button(getContext());
-                    Playlist p = playlists.get(i);
+                    final Playlist p = playlists.get(i);
                     b.setLayoutParams(
                             new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -187,8 +192,17 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
                         @Override
                         public void onClick(View view) {
                             //play this playlist
+                            Toast.makeText(getContext(),"Playing " + p.getName(), Toast.LENGTH_SHORT).show();
                         }
                     });
+                    b.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            Toast.makeText(getContext(),"Editing " + p.getName(), Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                    });
+                    mFourthOnwards.addView(b);
                 }
             }
 
@@ -218,18 +232,29 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
         }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public boolean onLongClick(View view) {
+        Intent i = new Intent(getContext(), EditarPlaylistActivity.class);
+        switch (view.getId()){
+            case R.id.card_first:
+                Toast.makeText(getContext(), "Editing " + playlists.get(0).getName(), Toast.LENGTH_SHORT).show();
+                i.putExtra("playlist_id", playlists.get(0).getId());
+                break;
+            case R.id.card_second:
+                if(playlists.size() < 2) break;
+                Toast.makeText(getContext(), "Editing " + playlists.get(1).getName(), Toast.LENGTH_SHORT).show();
+
+                i.putExtra("playlist_id", playlists.get(1).getId());
+                break;
+            case R.id.card_third:
+                if(playlists.size() < 3) break;
+                Toast.makeText(getContext(), "Editing " + playlists.get(2).getName(), Toast.LENGTH_SHORT).show();
+                i.putExtra("playlist_id", playlists.get(2).getId());
+
+                break;
+        }
+        startActivity(i);
+        return true;
     }
+
 }

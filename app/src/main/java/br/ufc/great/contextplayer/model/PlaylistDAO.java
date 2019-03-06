@@ -37,7 +37,7 @@ public class PlaylistDAO {
     public PlaylistDAO(@NonNull Context context) {
         this.context = context;
         resolver = context.getContentResolver();
-        definitionsDAO = ApplicationDb.getInstance(context).playlistContextsDAO();
+        definitionsDAO = new PlaylistContextsDAO(context);
         joinDAO = ApplicationDb.getInstance(context).playlistContextJoinDAO();
         contextDatabase = EasyContextDatabase.getInstance(context, ApplicationDb.DB_NAME);
 
@@ -105,8 +105,23 @@ public class PlaylistDAO {
 
     public Playlist getPlaylist(long playlistId){
         Playlist p = new Playlist();
-        Uri playlistUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
-        Cursor allSongs = resolver.query(playlistUri, PROJECTION_PLAYLIST, null, null, null);
+
+        Uri memberUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
+        Uri allPlaylistsUri = MediaStore.Audio.Playlists.getContentUri("external");
+
+        //query for getting the name..
+        Cursor allPlaylists = resolver.query(allPlaylistsUri, new String[] {"*"}, null, null, null);
+
+        for(allPlaylists.moveToFirst(); !allPlaylists.isAfterLast(); allPlaylists.moveToNext()){
+            long idFound = allPlaylists.getLong(allPlaylists.getColumnIndex(MediaStore.Audio.Playlists._ID));
+            if(idFound == playlistId){
+                p.setName(allPlaylists.getString(allPlaylists.getColumnIndex(MediaStore.Audio.Playlists.NAME)));
+                p.setId(playlistId);
+                break;
+            }
+        }
+
+        Cursor allSongs = resolver.query(memberUri, null, null, null, null);
         if (allSongs == null) {
             return null;
         }
@@ -119,6 +134,7 @@ public class PlaylistDAO {
                 p.addSong(song);
         }
         allSongs.close();
+        allPlaylists.close();
         //get definitions data from Room persistance
 
         PlaylistContexts contexts = definitionsDAO.getByPlaylistId(playlistId);
@@ -279,7 +295,7 @@ public class PlaylistDAO {
             p.setName(name);
             allPlaylists.add(p);
             ApplicationDb db = ApplicationDb.getInstance(context);
-            PlaylistContexts ctxs = db.playlistContextsDAO().getByPlaylistId(p.getId());
+            PlaylistContexts ctxs = definitionsDAO.getByPlaylistId(p.getId());
             p.setDefinitions(ctxs);
 
         }

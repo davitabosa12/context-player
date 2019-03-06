@@ -1,6 +1,7 @@
 package br.ufc.great.contextplayer.model;
 
 
+import java.io.Serializable;
 import java.util.List;
 
 import smd.ufc.br.easycontext.ContextDefinition;
@@ -9,7 +10,7 @@ import smd.ufc.br.easycontext.CurrentContext;
 /**
  * A packet class to calculate the context confidence of the playlist
  */
-public class PlaylistContexts {
+public class PlaylistContexts implements Serializable {
 
     private List<ContextDefinition> definitions;
 

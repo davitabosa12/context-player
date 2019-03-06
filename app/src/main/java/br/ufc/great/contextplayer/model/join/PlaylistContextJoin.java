@@ -21,7 +21,7 @@ public class PlaylistContextJoin {
     @PrimaryKey(autoGenerate = true)
     int uid;
 
-    @ColumnInfo(name = "playlist_id")
+    @ColumnInfo
     long playlistId;
 
     public long getPlaylistId() {

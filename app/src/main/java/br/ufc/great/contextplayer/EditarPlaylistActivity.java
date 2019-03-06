@@ -21,8 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufc.great.contextplayer.model.Playlist;
+import br.ufc.great.contextplayer.model.PlaylistContexts;
 import br.ufc.great.contextplayer.model.PlaylistDAO;
 import br.ufc.great.contextplayer.model.Song;
+import smd.ufc.br.easycontext.persistance.entities.DetectedActivityDefinition;
+import smd.ufc.br.easycontext.persistance.entities.LocationDefinition;
+import smd.ufc.br.easycontext.persistance.entities.TimeIntervalDefinition;
+import smd.ufc.br.easycontext.persistance.entities.WeatherDefinition;
 
 public class EditarPlaylistActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -32,6 +37,8 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
     private Button btnUpdatePlaylist;
     private ArrayAdapter mAdapter;
     private CardView mCardContext;
+    private Playlist thePlaylist;
+
 
     private static final int REQUEST_CODE_CONTEXT = 304;
 
@@ -40,7 +47,10 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_playlist);
-        setCorrectTitle();
+        long playlistId = getIntent().getLongExtra("playlist_id", -1);
+        PlaylistDAO dao = new PlaylistDAO(this);
+        thePlaylist = dao.getPlaylist(playlistId);
+        setTitle("Editing " + thePlaylist.getName());
 
         mListView = findViewById(R.id.lv_songlist);
         allSongs = new MusicScanner(this).scan();
@@ -67,14 +77,10 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
 
     private void checkSongsFromPlaylist() {
         ContentResolver resolver = getContentResolver();
-        Intent i = getIntent();
-        String playlist = i.getStringExtra("playlist");
-        Uri uri = getUriFromString(playlist);
 
-        Cursor songsInPlaylist = resolver.query(uri, null, null, null, null);
 
-        for(songsInPlaylist.moveToFirst(); !songsInPlaylist.isAfterLast(); songsInPlaylist.moveToNext()){
-            Song s= Song.fromCursor(songsInPlaylist);
+
+        for(Song s: thePlaylist.getSongs()){
             int songIndex = allSongs.indexOf(s);
             if(songIndex < 0)
                 continue;
@@ -82,21 +88,6 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
         }
         updateSelectedMusic();
 
-    }
-
-    private void setCorrectTitle() {
-        String playlist = getIntent().getStringExtra("playlist");
-        if(playlist.equalsIgnoreCase("chuvoso")){
-            setTitle("Editando \"chuvoso\"");
-        }   else if(playlist.equalsIgnoreCase("ensolarado")){
-            setTitle("Editando \"ensolarado\"");
-        }   else if(playlist.equalsIgnoreCase("no_carro")){
-            setTitle("Editando \"no carro\"");
-        }   else if(playlist.equalsIgnoreCase("nuvens")){
-            setTitle("Editando \"chuvoso\"");
-        }   else if(playlist.equalsIgnoreCase("treino")){
-            setTitle("Editando \"treino\"" );
-        }
     }
 
 
@@ -114,7 +105,17 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
     }
 
     private void savePlaylist() {
-        ContentResolver resolver = getContentResolver();
+
+        PlaylistDAO dao = new PlaylistDAO(this);
+        Playlist newPlaylist = new Playlist();
+        newPlaylist.setId(thePlaylist.getId());
+        for(Song s : selectedSongs){
+            newPlaylist.addSong(s);
+        }
+        dao.updatePlaylist(newPlaylist, thePlaylist.getId());
+
+
+        /*ContentResolver resolver = getContentResolver();
         Intent i = getIntent();
         String playlist = i.getStringExtra("playlist");
         Uri uri = getUriFromString(playlist);
@@ -140,7 +141,7 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
             }
             Log.d(TAG, "savePlaylist: " + s.getTitle() + " added to playlist!");
         }
-
+*/
     }
 
     private Uri getUriFromString(String playlist) {
@@ -171,9 +172,31 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if(requestCode == REQUEST_CODE_CONTEXT){
             if(resultCode == RESULT_OK){
-
+                Bundle b = data.getExtras();
+                if (b == null) {
+                    return;
+                }
+                TimeIntervalDefinition timeIntervalDefinition = (TimeIntervalDefinition) b.getSerializable("time_interval");
+                DetectedActivityDefinition activityDefinition = (DetectedActivityDefinition) b.getSerializable("detected_activity");
+                WeatherDefinition weatherDefinition = (WeatherDefinition) b.getSerializable("weather");
+                LocationDefinition locationDefinition = (LocationDefinition) b.getSerializable("location");
+                //clear definitions
+                thePlaylist.setDefinitions(new PlaylistContexts());
+                if(timeIntervalDefinition != null){
+                    thePlaylist.addContextDefinition(timeIntervalDefinition);
+                }
+                if(activityDefinition != null){
+                    thePlaylist.addContextDefinition(activityDefinition);
+                }
+                if (weatherDefinition != null){
+                    thePlaylist.addContextDefinition(weatherDefinition);
+                }
+                if(locationDefinition != null){
+                    thePlaylist.addContextDefinition(locationDefinition);
+                }
             }
         }
     }
