@@ -15,7 +15,7 @@ import smd.ufc.br.easycontext.CurrentContext;
 @Entity
 public class TimeIntervalDefinition implements TimeIntervals, ContextDefinition  {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int uid;
 
     @ColumnInfo(name = "time_intervals")

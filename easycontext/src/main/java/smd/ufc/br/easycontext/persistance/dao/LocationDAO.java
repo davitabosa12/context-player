@@ -6,17 +6,17 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 import smd.ufc.br.easycontext.persistance.entities.DetectedActivityDefinition;
+import smd.ufc.br.easycontext.persistance.entities.LocationDefinition;
 
 @Dao
-public interface DetectedActivityDAO {
-
-    @Query("SELECT * FROM detectedactivitydefinition WHERE uid == :id")
-    DetectedActivityDefinition getById(long id);
+public interface LocationDAO {
+    @Query("SELECT * FROM locationdefinition WHERE uid == :id")
+    LocationDefinition getById(long id);
 
     @Insert
-    long insert(DetectedActivityDefinition definition);
+    long insert(LocationDefinition definition);
 
     @Delete
-    void delete(DetectedActivityDefinition definition);
+    void delete(LocationDefinition definition);
 
 }

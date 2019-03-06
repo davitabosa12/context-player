@@ -136,7 +136,12 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
         //get playlist confidence
         for(Playlist playlist : playlists){
             PlaylistContexts contexts = playlist.getDefinitions();
-            float confidence = contexts.calculateConfidence(currentContext);
+            float confidence;
+            if (contexts == null) {
+                confidence = 0.0f;
+            }else{
+                confidence = contexts.calculateConfidence(currentContext);
+            }
             playlistConfidences.add(new PlaylistConfidence(playlist, confidence));
         }
         //sort it descending (reverse order)

@@ -22,6 +22,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
         Fragment playlistSelect = SelectPlaylistFragment.newInstance();
         mFragments.add(musicList);
         mFragments.add(mainScreen);
+        mFragments.add(playlistSelect);
     }
 
     @Nullable
@@ -31,6 +32,8 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return "Músicas";
             case 1:
+                return "To be removed";
+            case 2:
                 return "Playlists";
             default:
                 return "";

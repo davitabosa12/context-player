@@ -11,10 +11,10 @@ import smd.ufc.br.easycontext.persistance.entities.TimeIntervalDefinition;
 public interface TimeIntervalDAO {
 
     @Query("SELECT * FROM timeintervaldefinition WHERE uid == :id")
-    TimeIntervalDefinition getById(int id);
+    TimeIntervalDefinition getById(long id);
 
     @Insert
-    void insert(TimeIntervalDefinition definition);
+    long insert(TimeIntervalDefinition definition);
 
     @Delete
     void delete(TimeIntervalDefinition definition);

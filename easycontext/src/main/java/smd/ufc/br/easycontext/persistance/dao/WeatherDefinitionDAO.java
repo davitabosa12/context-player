@@ -12,10 +12,10 @@ public interface WeatherDefinitionDAO {
 
 
     @Query("SELECT * FROM weatherdefinition WHERE uid == :id")
-    WeatherDefinition getById(int id);
+    WeatherDefinition getById(long id);
 
     @Insert
-    void insert(WeatherDefinition definition);
+    long insert(WeatherDefinition definition);
 
     @Delete
     void delete(WeatherDefinition definition);

@@ -22,6 +22,7 @@ public interface ContextDefinition extends Serializable {
      *
      * @return a value between 0 and 1. 0 when they are different, 1 when they are identical.
      */
+
     public abstract float calculateConfidence(CurrentContext currentContext);
 
     public static class Maths{

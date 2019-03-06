@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -29,6 +30,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import br.ufc.great.contextplayer.fragments.OnFragmentInteractionListener;
+import br.ufc.great.contextplayer.fragments.dialog.CreatePlaylistDialog;
 import br.ufc.great.contextplayer.model.Playlist;
 import br.ufc.great.contextplayer.services.PlaybackService;
 import smd.ufc.br.easycontext.CurrentContext;
@@ -65,6 +67,7 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         //setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -104,8 +107,10 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_new_playlist) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment createPlaylist = CreatePlaylistDialog.newInstance();
+            ((CreatePlaylistDialog) createPlaylist).show(ft, "create_playlist");
         }
 
         return super.onOptionsItemSelected(item);

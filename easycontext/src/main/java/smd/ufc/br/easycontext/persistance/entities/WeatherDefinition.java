@@ -16,7 +16,7 @@ import smd.ufc.br.easycontext.CurrentContext;
 public class WeatherDefinition implements Weather, ContextDefinition  {
 
     // --------------------- FIELDS ------------------------ //
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int uid;
 
     @ColumnInfo(name = "temperature")

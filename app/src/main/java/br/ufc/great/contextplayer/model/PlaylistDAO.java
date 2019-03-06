@@ -1,5 +1,6 @@
 package br.ufc.great.contextplayer.model;
 
+import android.arch.persistence.room.Room;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,12 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufc.great.contextplayer.database.ApplicationDb;
+import br.ufc.great.contextplayer.model.join.PlaylistContextJoin;
+import br.ufc.great.contextplayer.model.join.PlaylistContextJoinDAO;
+import smd.ufc.br.easycontext.ContextDefinition;
+import smd.ufc.br.easycontext.persistance.databases.EasyContextDatabase;
+import smd.ufc.br.easycontext.persistance.entities.DetectedActivityDefinition;
+import smd.ufc.br.easycontext.persistance.entities.LocationDefinition;
+import smd.ufc.br.easycontext.persistance.entities.TimeIntervalDefinition;
+import smd.ufc.br.easycontext.persistance.entities.WeatherDefinition;
 
 public class PlaylistDAO {
 
     private Context context;
     private ContentResolver resolver;
     private PlaylistContextsDAO definitionsDAO;
+    private PlaylistContextJoinDAO joinDAO;
+    private EasyContextDatabase contextDatabase;
     private static final String TAG = "PlaylistDAO";
     private static final String[] SELECTION_PLAYLIST = new String[] {MediaStore.Audio.Playlists._ID, MediaStore.Audio.Playlists.NAME};
 
@@ -27,12 +38,40 @@ public class PlaylistDAO {
         this.context = context;
         resolver = context.getContentResolver();
         definitionsDAO = ApplicationDb.getInstance(context).playlistContextsDAO();
+        joinDAO = ApplicationDb.getInstance(context).playlistContextJoinDAO();
+        contextDatabase = EasyContextDatabase.getInstance(context, ApplicationDb.DB_NAME);
 
 
     }
 
     public boolean addPlaylist(Playlist playlist){
         long playlistId = createBlankPlaylist(playlist.getName());
+
+        //save information about definitions in Easycontext
+        PlaylistContextJoin join = new PlaylistContextJoin();
+        join.setPlaylistId(playlistId);
+
+        for (ContextDefinition d :playlist.getDefinitions().getDefinitions()){
+            if(d instanceof TimeIntervalDefinition){
+                long ctxId = contextDatabase.timeIntervalDAO().insert((TimeIntervalDefinition) d);
+                join.setTimeIntervalId(ctxId);
+            } else if(d instanceof WeatherDefinition){
+                long id = contextDatabase.weatherDefinitionDAO().insert((WeatherDefinition) d);
+                join.setWeatherId(id);
+            } else if(d instanceof LocationDefinition){
+                //TODO: Implement this
+                Log.d(TAG, "Tried to save to Location");
+            } else if(d instanceof DetectedActivityDefinition){
+
+                long id = contextDatabase.detectedActivityDAO().insert((DetectedActivityDefinition) d);
+                join.setActivityId(id);
+            }
+        }
+        //save information about PlaylistContexts definitions
+        long joinId = joinDAO.insert(join);
+
+
+        //save playlist in MediaStore
         ContentResolver resolver = context.getContentResolver();
         Uri playlistUri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
         int order = 0;
@@ -58,10 +97,6 @@ public class PlaylistDAO {
 
 
         }
-        //save information about PlaylistContexts definitions
-        PlaylistContexts definitions = playlist.getDefinitions();
-        definitions.setPlaylistId(playlistId);
-        ApplicationDb.getInstance(context).playlistContextsDAO().insert(definitions);
 
         //TODO: return result of task
         return true;
@@ -85,6 +120,7 @@ public class PlaylistDAO {
         }
         allSongs.close();
         //get definitions data from Room persistance
+
         PlaylistContexts contexts = definitionsDAO.getByPlaylistId(playlistId);
         p.setDefinitions(contexts);
         return p;
@@ -125,6 +161,10 @@ public class PlaylistDAO {
                 problems = true;
             }
         }
+
+        //third: update context definitions into ApplicationDb
+
+        definitionsDAO.update(playlistId, newPlaylist.getDefinitions());
         return (result1 > 0) && !problems; //true if name has changed and no problems inserting songs.
     }
 
@@ -238,6 +278,9 @@ public class PlaylistDAO {
             p.setId(id);
             p.setName(name);
             allPlaylists.add(p);
+            ApplicationDb db = ApplicationDb.getInstance(context);
+            PlaylistContexts ctxs = db.playlistContextsDAO().getByPlaylistId(p.getId());
+            p.setDefinitions(ctxs);
 
         }
         cursor.close();

@@ -14,7 +14,7 @@ import smd.ufc.br.easycontext.CurrentContext;
 @Entity
 public class DetectedActivityDefinition extends DetectedActivity implements ContextDefinition {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int uid;
 
     @ColumnInfo(name = "activityType")

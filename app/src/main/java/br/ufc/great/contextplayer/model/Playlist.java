@@ -30,7 +30,7 @@ public class Playlist {
         return definitions;
     }
 
-    public void setDefinitions(PlaylistContexts definitions) {
+    public void setDefinitions(@Nullable PlaylistContexts definitions) {
         this.definitions = definitions;
     }
 

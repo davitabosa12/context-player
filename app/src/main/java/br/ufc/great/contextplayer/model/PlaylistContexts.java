@@ -1,23 +1,19 @@
 package br.ufc.great.contextplayer.model;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
 
 import java.util.List;
 
 import smd.ufc.br.easycontext.ContextDefinition;
 import smd.ufc.br.easycontext.CurrentContext;
 
-@Entity
+/**
+ * A packet class to calculate the context confidence of the playlist
+ */
 public class PlaylistContexts {
-    @PrimaryKey
-    int uid;
 
-    @ColumnInfo(name = "definitions")
     private List<ContextDefinition> definitions;
 
-    @ColumnInfo(name = "playlist_id")
+
     long playlistId;
 
     public PlaylistContexts() {
@@ -43,9 +39,13 @@ public class PlaylistContexts {
     }
 
     public float calculateConfidence(CurrentContext currentContext) {
-        for(ContextDefinition definition : definitions){
-            definition.calculateConfidence(currentContext);
+        if (definitions == null) {
+            return 0;
         }
-        return 0;
+        float result = 0.0f;
+        for(ContextDefinition definition : definitions){
+            result += definition.calculateConfidence(currentContext);
+        }
+        return result;
     }
 }
