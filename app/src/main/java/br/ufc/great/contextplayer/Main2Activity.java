@@ -37,6 +37,8 @@ import br.ufc.great.contextplayer.services.PlaybackService;
 import smd.ufc.br.easycontext.CurrentContext;
 import smd.ufc.br.easycontext.Snapshot;
 
+import static br.ufc.great.contextplayer.database.ApplicationDb.DB_NAME;
+
 public class Main2Activity extends AppCompatActivity implements OnFragmentInteractionListener, Snapshot.OnContextUpdate, View.OnClickListener {
 
     /**
