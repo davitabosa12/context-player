@@ -62,7 +62,7 @@ public class PickTimeIntervalDialog extends DialogFragment implements DialogInte
                 definition = new TimeIntervalDefinition();
                 for(int index = 0; index < mItems.size(); index++){
                     if(mItems.valueAt(index)){
-                        definition.addTimeInterval(index);
+                        definition.addTimeInterval(index + 1);
                     }
                 }
                 mListener.onTimeIntervalPick(definition);

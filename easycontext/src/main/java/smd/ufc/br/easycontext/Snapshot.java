@@ -86,6 +86,7 @@ public class Snapshot {
     }
     /**************************************************************************************************/
     public void setCallback(OnContextUpdate callback){
+
         this.callback = callback;
     }
     private Task<WeatherResponse> updateWeather() {
@@ -174,7 +175,10 @@ public class Snapshot {
         if (callback == null) {
             Log.d(TAG, "updateContext: CALLBACK NOT SET! CONTEXT WILL NOT UPDATE!");
         }
-        callback.onContextUpdate(currentContext);
+        if (currentContext != null) {
+
+            //callback.onContextUpdate(currentContext);
+        }
 
     }
 
