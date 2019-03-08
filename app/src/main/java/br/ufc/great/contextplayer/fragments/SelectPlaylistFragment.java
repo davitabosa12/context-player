@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import br.ufc.great.contextplayer.EditarPlaylistActivity;
+import br.ufc.great.contextplayer.Main2Activity;
 import br.ufc.great.contextplayer.R;
 import br.ufc.great.contextplayer.model.Playlist;
 import br.ufc.great.contextplayer.model.PlaylistConfidence;
@@ -31,6 +32,8 @@ import br.ufc.great.contextplayer.model.PlaylistDAO;
 import br.ufc.great.contextplayer.views.PlaylistBigCard;
 import smd.ufc.br.easycontext.CurrentContext;
 import smd.ufc.br.easycontext.Snapshot;
+
+import static br.ufc.great.contextplayer.Main2Activity.PLAY_ACTION;
 
 
 /**
@@ -219,6 +222,9 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
                         @Override
                         public void onClick(View view) {
                             //play this playlist
+                            Intent i = new Intent(PLAY_ACTION);
+                            i.putExtra("playlist_id", (long) p.getId());
+                            getContext().sendBroadcast(i);
                             Toast.makeText(getContext(),"Playing " + p.getName(), Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -249,16 +255,34 @@ public class SelectPlaylistFragment extends Fragment implements Snapshot.OnConte
         //maybe pass an intent with the playlistId to play?
         switch (view.getId()){
             case R.id.card_first:
-                Toast.makeText(getContext(), "Playing " + playlists.get(0).getName(), Toast.LENGTH_SHORT).show();
+                {
+                    Intent i = new Intent(PLAY_ACTION);
+                    i.putExtra("playlist_id", (long) playlists.get(0).getId());
+                    getContext().sendBroadcast(i);
+                    Toast.makeText(getContext(), "Playing " + playlists.get(0).getName(), Toast.LENGTH_SHORT).show();
+                }
+
+
                 break;
             case R.id.card_second:
+            {
                 if(playlists.size() < 2) break;
+                Intent i = new Intent(PLAY_ACTION);
+                i.putExtra("playlist_id", (long) playlists.get(1).getId());
+                getContext().sendBroadcast(i);
                 Toast.makeText(getContext(), "Playing " + playlists.get(1).getName(), Toast.LENGTH_SHORT).show();
                 break;
+
+            }
             case R.id.card_third:
+            {
                 if(playlists.size() < 3) break;
+                Intent i = new Intent(PLAY_ACTION);
+                i.putExtra("playlist_id", (long) playlists.get(2).getId());
+                getContext().sendBroadcast(i);
                 Toast.makeText(getContext(), "Playing " + playlists.get(2).getName(), Toast.LENGTH_SHORT).show();
                 break;
+            }
         }
     }
 

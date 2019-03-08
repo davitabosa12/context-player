@@ -1,7 +1,10 @@
 package br.ufc.great.contextplayer;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
@@ -33,6 +36,7 @@ import com.google.android.gms.tasks.Task;
 import br.ufc.great.contextplayer.fragments.OnFragmentInteractionListener;
 import br.ufc.great.contextplayer.fragments.dialog.CreatePlaylistDialog;
 import br.ufc.great.contextplayer.model.Playlist;
+import br.ufc.great.contextplayer.model.PlaylistDAO;
 import br.ufc.great.contextplayer.services.PlaybackService;
 import smd.ufc.br.easycontext.CurrentContext;
 import smd.ufc.br.easycontext.Snapshot;
@@ -57,12 +61,30 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private static final String TAG = "Main2Activity";
+    public static final String PLAY_ACTION = "contextplayer-playlist";
 
     //music player service
     private PlaybackService musicService;
     private FloatingActionButton fabPlaylist;
     private boolean musicBound = false;
     private Intent playIntent;
+    private BroadcastReceiver playlistReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long playlistId = intent.getLongExtra("playlist_id", -1);
+            if(playlistId < 0){
+                Log.d(TAG, "onReceive: invalid id");
+            }
+            Playlist playlist = new PlaylistDAO(getApplicationContext()).getPlaylist(playlistId);
+            if (playlist == null) {
+                Log.d(TAG, "onReceive: playlist not found");
+                return;
+            }
+            musicService.addPlaylist(playlist.getSongs());
+            musicService.setSong(0);
+            musicService.playSong();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +108,7 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         mTabLayout.setupWithViewPager(mViewPager);
         fabPlaylist = findViewById(R.id.fab_new_playlist);
         fabPlaylist.setOnClickListener(this);
+        registerReceiver(playlistReceiver, new IntentFilter(PLAY_ACTION));
 
        /* try {
             //snapshot.updateContext(Snapshot.WEATHER, Snapshot.TIME_INTERVAL, Snapshot.DETECTED_ACTIVITY);
@@ -95,6 +118,23 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(playlistReceiver, new IntentFilter(PLAY_ACTION));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(playlistReceiver);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(playlistReceiver);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
