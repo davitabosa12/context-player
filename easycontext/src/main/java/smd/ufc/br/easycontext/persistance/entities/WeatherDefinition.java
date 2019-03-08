@@ -5,14 +5,18 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.icu.math.MathContext;
 import android.support.annotation.Nullable;
+import android.support.v4.math.MathUtils;
 
 import com.google.android.gms.awareness.state.Weather;
 
 import java.util.Arrays;
+import java.util.DoubleSummaryStatistics;
 
 import smd.ufc.br.easycontext.ContextDefinition;
 import smd.ufc.br.easycontext.CurrentContext;
+import smd.ufc.br.easycontext.math.FloatStatistics;
 import smd.ufc.br.easycontext.persistance.typeconverters.IntegerArrayConverter;
 
 @Entity
@@ -122,16 +126,17 @@ public class WeatherDefinition implements Weather, ContextDefinition  {
          * current weather conditions. We will prioritize the length of the previously defined weather
          * to damper the value of conditions we get right.
          */
-        float calculationDamper = conditions.length + 0.0f; // using the number of conditions as a damper.
-        float sum = 0.0f;
+        float calculationDamper = Math.max(otherConditions.length, conditions.length); // using the number of conditions as a damper.
+
+        FloatStatistics sum = new FloatStatistics();
         for(int otherCondition : otherConditions ){
             float tempSum = 0.0f;
             for (int myCondition : conditions) {
                 tempSum += CONDITIONS_MATRIX[myCondition][otherCondition];
             }
-            sum += ContextDefinition.Maths.clamp(tempSum, 1.0f);
+            sum.accept(ContextDefinition.Maths.clamp(tempSum, 1.0f));
         }
-        return ContextDefinition.Maths.clamp(sum/calculationDamper, 1.0f);
+        return ContextDefinition.Maths.clamp(sum.getAverage(), 1.0f);
     }
 
 

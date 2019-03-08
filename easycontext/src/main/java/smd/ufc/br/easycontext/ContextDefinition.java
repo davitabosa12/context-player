@@ -36,6 +36,10 @@ public interface ContextDefinition extends Serializable {
          * @return ceil if value > ceil. Otherwise simply returns value.
          */
         public static float clamp(float value, float ceil){
+            Float f = value;
+            if(f.isNaN() || f.isInfinite()){
+                return ceil;
+            }
             if(value > ceil)
                 return ceil;
             else

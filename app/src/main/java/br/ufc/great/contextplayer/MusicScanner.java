@@ -40,18 +40,22 @@ public class MusicScanner {
         cursorInternal = cr.query(internalUri, null, selection, null, sortOrder);
         cursorExternal.moveToFirst();
         cursorInternal.moveToFirst();
+        int musics = 0;
         while(!cursorExternal.isAfterLast()){
             Song song = Song.fromCursor(cursorExternal);
-            Log.d(TAG, song.toString());
+            //Log.d(TAG, song.toString());
+            musics++;
             songList.add(song);
             cursorExternal.moveToNext();
         }
         while(!cursorInternal.isAfterLast()){
             Song song = Song.fromCursor(cursorInternal);
-            Log.d(TAG, song.toString());
+            //Log.d(TAG, song.toString());
+            musics++;
             songList.add(song);
             cursorInternal.moveToNext();
         }
+        Log.d(TAG, "scan: " + musics + " songs found");
         songList = (ArrayList<Song>) cleanSonglist(songList);
         return songList;
     }

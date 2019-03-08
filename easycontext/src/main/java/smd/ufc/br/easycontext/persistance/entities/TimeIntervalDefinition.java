@@ -75,7 +75,7 @@ public class TimeIntervalDefinition implements TimeIntervals, ContextDefinition 
         if(other == null)
             return 0;
 
-        float damper = 1.0f / timeIntervals.length;
+        float damper = 1.0f / other.getTimeIntervals().length;
         int matching = 0; // number of time intervals that match each other
         for(int t : timeIntervals){
             if(other.hasTimeInterval(t)){

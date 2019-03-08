@@ -127,14 +127,25 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(playlistReceiver);
+        try{
+
+            unregisterReceiver(playlistReceiver);
+        }catch(Exception e){
+            //do nothing
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(playlistReceiver);
+        try{
+            unregisterReceiver(playlistReceiver);
+
+        } catch(Exception e){
+            //do nothing
+        }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
