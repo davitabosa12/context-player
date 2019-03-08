@@ -2,8 +2,15 @@ package br.ufc.great.contextplayer;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.arch.persistence.room.Room;
+import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.RoomOpenHelper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteCursorDriver;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQuery;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -15,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import br.ufc.great.contextplayer.model.Playlist;
+import smd.ufc.br.easycontext.persistance.databases.ContextDb;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -100,6 +108,36 @@ public class SplashActivity extends AppCompatActivity {
 
 
         setContentView(R.layout.activity_splash);
+        ContextDb database = ContextDb.getInstance(this, "new_database");
+        database.detectedActivityDAO().getById(3);
+//        ContextDb db2 = Room.databaseBuilder(this, ContextDb.class, "new_database").build();
+//        //Cursor c = db2.query("SELECT * FROM " + Room.MASTER_TABLE_NAME, null);
+//        Cursor c = db2.query("SELECT * FROM " + Room.MASTER_TABLE_NAME, null);
+//        if (c == null) {
+//            Log.i(TAG, "onCreate: c is null");
+//        }
+//        Log.d(TAG, "onCreate: count = " + c.getCount());
+//        for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()){
+//            for (String col:
+//            c.getColumnNames()    ) {
+//                Log.d(TAG, "onCreate: column " + col);
+//
+//            }
+//        }
+        Log.d(TAG, "onCreate: data directory -> " + getDataDir());
+        String [] list = databaseList();
+//        for(String database : list){
+//
+//            Log.d(TAG, "database: " + database);
+//            Log.d(TAG, "onCreate: database path ->>>" + getDatabasePath(database));
+//            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(getDatabasePath(database), null);
+//            Log.d(TAG, "onCreate: path = " + db.getPath());
+//            Log.d(TAG, "onCreate: version = " + db.getVersion());
+//            Log.d(TAG, "onCreate: integrity ok? " + db.isDatabaseIntegrityOk());
+//
+//
+//
+//        }
 
         //todo: thread de 3 segundos
 

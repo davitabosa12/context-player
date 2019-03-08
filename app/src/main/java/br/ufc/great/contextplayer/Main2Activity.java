@@ -37,9 +37,8 @@ import br.ufc.great.contextplayer.services.PlaybackService;
 import smd.ufc.br.easycontext.CurrentContext;
 import smd.ufc.br.easycontext.Snapshot;
 
-import static br.ufc.great.contextplayer.database.ApplicationDb.DB_NAME;
 
-public class Main2Activity extends AppCompatActivity implements OnFragmentInteractionListener, Snapshot.OnContextUpdate, View.OnClickListener {
+public class Main2Activity extends AppCompatActivity implements OnFragmentInteractionListener, View.OnClickListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -50,6 +49,7 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private MainPagerAdapter mainPagerAdapter;
+    public static final String DB_NAME = "new_database";
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -79,11 +79,11 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         mTabLayout = findViewById(R.id.tab_layout);
 
 
+
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mainPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
-        Snapshot snapshot = Snapshot.getInstance(this);
         fabPlaylist = findViewById(R.id.fab_new_playlist);
         fabPlaylist.setOnClickListener(this);
 
@@ -93,8 +93,6 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
             e.printStackTrace();
         }*/
 
-        snapshot.setCallback(this);
-        snapshot.updateContext(Snapshot.WEATHER, Snapshot.TIME_INTERVAL, Snapshot.DETECTED_ACTIVITY);
     }
 
 
@@ -175,13 +173,6 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         }
     }
 
-    @Override
-    public void onContextUpdate(CurrentContext currentContext) {
-        if (currentContext == null) {
-            return;
-        }
-        Log.d(TAG, "onContextUpdate: " + currentContext.toString());
-    }
 
     @Override
     public void onClick(View view) {

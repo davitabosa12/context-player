@@ -11,7 +11,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.ufc.great.contextplayer.database.ApplicationDb;
+import br.ufc.great.contextplayer.Main2Activity;
+import br.ufc.great.contextplayer.database.AppDb;
 import br.ufc.great.contextplayer.model.join.PlaylistContextJoin;
 import br.ufc.great.contextplayer.model.join.PlaylistContextJoinDAO;
 import smd.ufc.br.easycontext.ContextDefinition;
@@ -19,7 +20,7 @@ import smd.ufc.br.easycontext.persistance.dao.DetectedActivityDAO;
 import smd.ufc.br.easycontext.persistance.dao.LocationDAO;
 import smd.ufc.br.easycontext.persistance.dao.TimeIntervalDAO;
 import smd.ufc.br.easycontext.persistance.dao.WeatherDefinitionDAO;
-import smd.ufc.br.easycontext.persistance.databases.EasyContextDatabase;
+import smd.ufc.br.easycontext.persistance.databases.ContextDb;
 import smd.ufc.br.easycontext.persistance.entities.DetectedActivityDefinition;
 import smd.ufc.br.easycontext.persistance.entities.LocationDefinition;
 import smd.ufc.br.easycontext.persistance.entities.TimeIntervalDefinition;
@@ -37,13 +38,15 @@ public class PlaylistContextsDAO {
     WeatherDefinitionDAO weatherDAO;
     DetectedActivityDAO activityDAO;
     LocationDAO locationDAO;
+    ContextDb database;
 
     public PlaylistContextsDAO(Context context){
+
         this.context = context;
-        joinDAO = ApplicationDb.getInstance(context).playlistContextJoinDAO();
-        EasyContextDatabase database = EasyContextDatabase.getInstance(context, ApplicationDb.DB_NAME);
+        joinDAO = AppDb.getInstance(context).playlistContextJoinDAO();
+        database = ContextDb.getInstance(context, Main2Activity.DB_NAME);
         timeIntervalDAO = database.timeIntervalDAO();
-        weatherDAO = database.weatherDefinitionDAO();
+        weatherDAO = database.weatherDAO();
         activityDAO = database.detectedActivityDAO();
 
         locationDAO = database.locationDAO();
@@ -86,6 +89,11 @@ public class PlaylistContextsDAO {
         join.setPlaylistId(playlistId);
         //delete all records from this playlistID
         joinDAO.deleteAll(playlistId);
+
+        //database.clearAllTables();
+        database.detectedActivityDAO().getById(playlistId);
+        //return -1;
+
 
         //insert
         for(ContextDefinition definition : definitions.getDefinitions()){

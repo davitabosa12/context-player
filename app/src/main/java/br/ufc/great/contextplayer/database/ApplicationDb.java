@@ -1,4 +1,4 @@
-package br.ufc.great.contextplayer.database;
+/*package br.ufc.great.contextplayer.database;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
@@ -11,29 +11,22 @@ import br.ufc.great.contextplayer.model.PlaylistContexts;
 import br.ufc.great.contextplayer.model.PlaylistContextsDAO;
 import br.ufc.great.contextplayer.model.join.PlaylistContextJoin;
 import br.ufc.great.contextplayer.model.join.PlaylistContextJoinDAO;
-
+@Deprecated
 @Database(entities = {PlaylistContextJoin.class}, version = 1)
 public abstract class ApplicationDb extends RoomDatabase {
     private static ApplicationDb instance;
-    public static final String DB_NAME = "new_db";
+    public static final String DB_NAME = "database";
 
     public abstract PlaylistContextJoinDAO playlistContextJoinDAO();
 
     public static ApplicationDb getInstance(Context context) {
 
         if (instance == null) {
-            instance = Room.databaseBuilder(context, ApplicationDb.class, DB_NAME).allowMainThreadQueries().addCallback(new Callback() {
-                @Override
-                public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                    super.onCreate(db);
-                }
-
-                @Override
-                public void onOpen(@NonNull SupportSQLiteDatabase db) {
-                    super.onOpen(db);
-                }
-            }).build();
+            instance = Room.databaseBuilder(context, ApplicationDb.class, DB_NAME).allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
+                    .build();
         }
         return instance;
     }
 }
+*/

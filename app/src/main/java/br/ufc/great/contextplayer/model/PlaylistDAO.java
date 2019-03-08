@@ -13,11 +13,12 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.ufc.great.contextplayer.database.ApplicationDb;
+import br.ufc.great.contextplayer.Main2Activity;
+import br.ufc.great.contextplayer.database.AppDb;
 import br.ufc.great.contextplayer.model.join.PlaylistContextJoin;
 import br.ufc.great.contextplayer.model.join.PlaylistContextJoinDAO;
 import smd.ufc.br.easycontext.ContextDefinition;
-import smd.ufc.br.easycontext.persistance.databases.EasyContextDatabase;
+import smd.ufc.br.easycontext.persistance.databases.ContextDb;
 import smd.ufc.br.easycontext.persistance.entities.DetectedActivityDefinition;
 import smd.ufc.br.easycontext.persistance.entities.LocationDefinition;
 import smd.ufc.br.easycontext.persistance.entities.TimeIntervalDefinition;
@@ -29,7 +30,7 @@ public class PlaylistDAO {
     private ContentResolver resolver;
     private PlaylistContextsDAO definitionsDAO;
     private PlaylistContextJoinDAO joinDAO;
-    private EasyContextDatabase contextDatabase;
+    private ContextDb contextDatabase;
     private static final String TAG = "PlaylistDAO";
     private static final String[] SELECTION_PLAYLIST = new String[] {MediaStore.Audio.Playlists._ID, MediaStore.Audio.Playlists.NAME};
 
@@ -38,8 +39,8 @@ public class PlaylistDAO {
         this.context = context;
         resolver = context.getContentResolver();
         definitionsDAO = new PlaylistContextsDAO(context);
-        joinDAO = ApplicationDb.getInstance(context).playlistContextJoinDAO();
-        contextDatabase = EasyContextDatabase.getInstance(context, ApplicationDb.DB_NAME);
+        joinDAO = AppDb.getInstance(context).playlistContextJoinDAO();
+        contextDatabase = ContextDb.getInstance(context, Main2Activity.DB_NAME);
 
 
     }
@@ -56,7 +57,7 @@ public class PlaylistDAO {
                 long ctxId = contextDatabase.timeIntervalDAO().insert((TimeIntervalDefinition) d);
                 join.setTimeIntervalId(ctxId);
             } else if(d instanceof WeatherDefinition){
-                long id = contextDatabase.weatherDefinitionDAO().insert((WeatherDefinition) d);
+                long id = contextDatabase.weatherDAO().insert((WeatherDefinition) d);
                 join.setWeatherId(id);
             } else if(d instanceof LocationDefinition){
                 //TODO: Implement this
@@ -178,10 +179,10 @@ public class PlaylistDAO {
             }
         }
 
-        //third: update context definitions into ApplicationDb
+        //third: update context definitions into AppDb
 
-        definitionsDAO.update(playlistId, newPlaylist.getDefinitions());
-        return (result1 > 0) && !problems; //true if name has changed and no problems inserting songs.
+        long result2 = definitionsDAO.update(playlistId, newPlaylist.getDefinitions());
+        return (result1 > 0) && (result2 >= 0) && !problems; //true if name has changed and no problems inserting songs.
     }
 
 
@@ -303,7 +304,6 @@ public class PlaylistDAO {
             p.setId(id);
             p.setName(name);
             allPlaylists.add(p);
-            ApplicationDb db = ApplicationDb.getInstance(context);
             PlaylistContexts ctxs = definitionsDAO.getByPlaylistId(p.getId());
             p.setDefinitions(ctxs);
 
