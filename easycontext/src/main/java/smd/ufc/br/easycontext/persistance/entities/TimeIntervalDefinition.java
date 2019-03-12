@@ -5,6 +5,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 
+import com.google.android.gms.awareness.fence.TimeFence;
 import com.google.android.gms.awareness.state.TimeIntervals;
 
 
@@ -12,10 +13,33 @@ import java.util.Arrays;
 
 import smd.ufc.br.easycontext.ContextDefinition;
 import smd.ufc.br.easycontext.CurrentContext;
+import smd.ufc.br.easycontext.math.FloatStatistics;
 import smd.ufc.br.easycontext.persistance.typeconverters.IntegerArrayConverter;
 
 @Entity
 public class TimeIntervalDefinition implements TimeIntervals, ContextDefinition  {
+
+
+    //constants
+    @Ignore
+    public static final int TIME_INTERVAL_WEEKDAY = 1;
+    @Ignore
+    public static final int TIME_INTERVAL_WEEKEND = 2;
+    @Ignore
+    public static final int TIME_INTERVAL_HOLIDAY = 3;
+    @Ignore
+    public static final int TIME_INTERVAL_MORNING = 4;
+    @Ignore
+    public static final int TIME_INTERVAL_AFTERNOON = 5;
+    @Ignore
+    public static final int TIME_INTERVAL_EVENING = 6;
+    @Ignore
+    public static final int TIME_INTERVAL_NIGHT = 7;
+    @Ignore
+    public static final int TIME_INTERVAL_ANY = 8;
+
+
+
     @PrimaryKey(autoGenerate = true)
     private int uid;
 
@@ -28,8 +52,11 @@ public class TimeIntervalDefinition implements TimeIntervals, ContextDefinition 
         this.timeIntervals = timeIntervals;
     }
 
+    /**
+     * Default ctor with ANY value
+     */
     public TimeIntervalDefinition() {
-        this.timeIntervals = new int[0];
+        this.timeIntervals = new int[]{TIME_INTERVAL_ANY};
     }
 
 
@@ -39,9 +66,10 @@ public class TimeIntervalDefinition implements TimeIntervals, ContextDefinition 
         return timeIntervals;
     }
 
-    public void addTimeInterval(int interval){
+    public TimeIntervalDefinition addTimeInterval(int interval){
         this.timeIntervals = Arrays.copyOf(timeIntervals, timeIntervals.length + 1);
         timeIntervals[timeIntervals.length - 1] = interval;
+        return this;
     }
 
     @Override
@@ -70,18 +98,32 @@ public class TimeIntervalDefinition implements TimeIntervals, ContextDefinition 
 
     @Override
     public float calculateConfidence(CurrentContext currentContext) {
-        TimeIntervals other = currentContext.getTimeIntervals();
+        if(currentContext == null){
+            return 0.0f;
+        }
+        TimeIntervals currentContextTimeIntervals = currentContext.getTimeIntervals();
 
-        if(other == null)
+        if(currentContextTimeIntervals == null)
             return 0;
+        FloatStatistics statistics = new FloatStatistics();
 
-        float damper = 1.0f / other.getTimeIntervals().length;
-        int matching = 0; // number of time intervals that match each other
-        for(int t : timeIntervals){
-            if(other.hasTimeInterval(t)){
-                matching++;
+
+        for(int t : currentContextTimeIntervals.getTimeIntervals()){
+            if(this.hasTimeInterval(t)){
+                //time intervals match
+                statistics.accept(1.0f);
+            } else {
+                //time intervals dont match
+                statistics.accept(0.0f);
             }
         }
-        return matching * damper;
+        //if defined context doesnt match with current context AND user said that ANY time interval is ok..
+        if(statistics.getSum() == 0 && this.hasTimeInterval(TIME_INTERVAL_ANY)){
+            //return default value 0.5f
+            return 0.5f;
+        }
+        //else..
+        return statistics.getAverage();
+
     }
 }

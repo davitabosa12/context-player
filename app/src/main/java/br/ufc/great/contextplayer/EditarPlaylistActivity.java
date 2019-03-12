@@ -223,15 +223,23 @@ public class EditarPlaylistActivity extends AppCompatActivity implements View.On
                 thePlaylist.setDefinitions(new PlaylistContexts());
                 if(timeIntervalDefinition != null){
                     thePlaylist.addContextDefinition(timeIntervalDefinition);
+                } else{
+                    thePlaylist.addContextDefinition(new TimeIntervalDefinition()); //any time interval
                 }
                 if(activityDefinition != null){
                     thePlaylist.addContextDefinition(activityDefinition);
+                } else {
+                    thePlaylist.addContextDefinition(new DetectedActivityDefinition()); //any activity
                 }
                 if (weatherDefinition != null){
                     thePlaylist.addContextDefinition(weatherDefinition);
+                } else {
+                    thePlaylist.addContextDefinition(new WeatherDefinition()); // any weather
                 }
                 if(locationDefinition != null){
                     thePlaylist.addContextDefinition(locationDefinition);
+                } else {
+                    thePlaylist.addContextDefinition(new LocationDefinition()); //any location
                 }
             }
         }

@@ -5,14 +5,11 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
-import android.icu.math.MathContext;
 import android.support.annotation.Nullable;
-import android.support.v4.math.MathUtils;
 
 import com.google.android.gms.awareness.state.Weather;
 
 import java.util.Arrays;
-import java.util.DoubleSummaryStatistics;
 
 import smd.ufc.br.easycontext.ContextDefinition;
 import smd.ufc.br.easycontext.CurrentContext;
@@ -23,6 +20,30 @@ import smd.ufc.br.easycontext.persistance.typeconverters.IntegerArrayConverter;
 public class WeatherDefinition implements Weather, ContextDefinition  {
 
 
+
+    //constants
+    @Ignore
+    public static final int CONDITION_ANY = 0;
+    @Ignore
+    public static final int CONDITION_UNKNOWN = 0;
+    @Ignore
+    public static final int CONDITION_CLEAR = 1;
+    @Ignore
+    public static final int CONDITION_CLOUDY = 2;
+    @Ignore
+    public static final int CONDITION_FOGGY = 3;
+    @Ignore
+    public static final int CONDITION_HAZY = 4;
+    @Ignore
+    public static final int CONDITION_ICY = 5;
+    @Ignore
+    public static final int CONDITION_RAINY = 6;
+    @Ignore
+    public static final int CONDITION_SNOWY = 7;
+    @Ignore
+    public static final int CONDITION_STORMY = 8;
+    @Ignore
+    public static final int CONDITION_WINDY = 9;
 
     // --------------------- FIELDS ------------------------ //
     @PrimaryKey
@@ -49,16 +70,17 @@ public class WeatherDefinition implements Weather, ContextDefinition  {
     @Ignore
     private static float[][] CONDITIONS_MATRIX = {
     //         0    1     2     3     4     5     6     7      8     9
-            {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, //CONDITION UNKNOWN 0
+            {0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f}, //CONDITION UNKNOWN 0
             {0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, //CONDITION CLEAR   1
             {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f}, //CONDITION CLOUDY  2
-            {0.0f, 0.0f, 0.0f, 1.0f, 0.4f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, //CONDITION FOGGY   3
-            {0.0f, 0.0f, 0.0f, 0.4f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, //CONDITION HAZY    4
+            {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, //CONDITION FOGGY   3
+            {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, //CONDITION HAZY    4
             {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.6f, 0.0f, 0.0f}, //CONDITION ICY     5
             {0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f}, //CONDITION RAINY   6
             {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.6f, 0.0f, 1.0f, 0.0f, 0.0f}, //CONDITION SNOWY   7
             {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.3f}, //CONDITION STORMY  8
-            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.3f, 1.0f}, //CONDITION WINDY   9
+            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.8f, 1.0f}  //CONDITION WINDY   9
+
     };
 
     @Ignore
@@ -75,8 +97,12 @@ public class WeatherDefinition implements Weather, ContextDefinition  {
     }
 
 
+    /**
+     * Default ctor with ANY value.
+     */
     public WeatherDefinition(){
-        this.conditions = new int[0];
+
+        this.conditions = new int[] {CONDITION_ANY};
     }
 
 
@@ -92,51 +118,40 @@ public class WeatherDefinition implements Weather, ContextDefinition  {
         return temperature;
     }
 
-    public void setTemperature(float temperature) {
-        this.temperature = temperature;
-    }
+
 
     public float getFeelsLikeTemperature() {
         return feelsLikeTemperature;
     }
 
-    public void setFeelsLikeTemperature(float feelsLikeTemperature) {
-        this.feelsLikeTemperature = feelsLikeTemperature;
-    }
 
     public float getDewPoint() {
         return dewPoint;
     }
 
-    public void setDewPoint(float dewPoint) {
+    public WeatherDefinition setTemperature(float temperature) {
+        this.temperature = temperature;
+        return this;
+    }
+
+    public WeatherDefinition setFeelsLikeTemperature(float feelsLikeTemperature) {
+        this.feelsLikeTemperature = feelsLikeTemperature;
+        return this;
+    }
+
+    public WeatherDefinition setDewPoint(float dewPoint) {
         this.dewPoint = dewPoint;
+        return this;
     }
 
-    public void setHumidity(int humidity) {
+    public WeatherDefinition setHumidity(int humidity) {
         this.humidity = humidity;
+        return this;
     }
 
-    public void setConditions(int[] conditions) {
+    public WeatherDefinition setConditions(int[] conditions) {
         this.conditions = conditions;
-    }
-
-    public float compareWeatherConditions(int[] otherConditions) {
-        /**
-         * CALCULATIONS: getConditions() will return an array with the best combination of the
-         * current weather conditions. We will prioritize the length of the previously defined weather
-         * to damper the value of conditions we get right.
-         */
-        float calculationDamper = Math.max(otherConditions.length, conditions.length); // using the number of conditions as a damper.
-
-        FloatStatistics sum = new FloatStatistics();
-        for(int otherCondition : otherConditions ){
-            float tempSum = 0.0f;
-            for (int myCondition : conditions) {
-                tempSum += CONDITIONS_MATRIX[myCondition][otherCondition];
-            }
-            sum.accept(ContextDefinition.Maths.clamp(tempSum, 1.0f));
-        }
-        return ContextDefinition.Maths.clamp(sum.getAverage(), 1.0f);
+        return this;
     }
 
 
@@ -170,16 +185,19 @@ public class WeatherDefinition implements Weather, ContextDefinition  {
     }
 
 
-    public void addCondition(int condition){
+    public WeatherDefinition addCondition(int condition){
 
         conditions = Arrays.copyOf(conditions, conditions.length + 1);
         conditions[conditions.length -1] = condition;
+        return this;
     }
 
     @Override
     public float calculateConfidence(CurrentContext currentContext) {
-        Weather other = currentContext.getWeather();
-        if (other == null) {
+        if(currentContext == null) return 0;
+
+        Weather currentWeather = currentContext.getWeather();
+        if (currentWeather == null) {
             return 0;
         }
         //return 0 if different types
@@ -187,9 +205,19 @@ public class WeatherDefinition implements Weather, ContextDefinition  {
         //check every field and compare each other
         //TODO: compare with ALL fields.
         //HACK: only comparing the weather conditions;
-        float conditions = compareWeatherConditions((other.getConditions()));
+        /**
+         * CALCULATIONS: getConditions() will return an array with the best combination of the
+         * current weather conditions.
+         */
 
+        FloatStatistics sum = new FloatStatistics();
+        for(int otherCondition : currentWeather.getConditions()){
+            for(int myCondition : conditions){
+                sum.accept(CONDITIONS_MATRIX[myCondition][otherCondition]);
+            }
+        }
+        float avg = sum.getAverage();
 
-        return conditions;
+        return avg > 1 ? 1 : avg;
     }
 }

@@ -113,6 +113,9 @@ public class PlaybackService extends Service
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if(playSong.getData() == null){
+            next();
+        }
         player.prepareAsync();
 
     }
@@ -133,6 +136,7 @@ public class PlaybackService extends Service
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+
         return false;
     }
 
@@ -195,6 +199,48 @@ public class PlaybackService extends Service
         songs.addAll(currentPlaylist);
     }
 
+    private void next() {
+        songPosition++;
+        if(songPosition >= songs.size()){
+            songPosition = 0;
+        }
+        setSong(songPosition);
+        playSong();
+
+    }
+
+    private void stop(Intent intent) {
+        int id = intent.getIntExtra("id",notificationId);
+        player.stop();
+        nm.cancel(id);
+
+    }
+
+    private void playPause() {
+        if(player.isPlaying()){
+            remoteViews.setImageViewResource(R.id.btn_playpause, R.drawable.ic_play_arrow_black_24dp);
+            player.pause();
+        } else {
+            remoteViews.setImageViewResource(R.id.btn_playpause, R.drawable.ic_pause_black_24dp);
+            player.start();
+        }
+    }
+
+    private void previous() {
+        //check duration of song
+        if(player.getCurrentPosition() < 1000){ //less than a second
+            player.seekTo(0);
+        } else {
+            songPosition--;
+            if(songPosition < 0){
+                songPosition = songs.size() - 1; // wrap the list?
+            }
+            setSong(songPosition);
+            playSong();
+        }
+
+    }
+
     public class PlaybackBinder extends Binder{
         public PlaybackService getService(){
             return PlaybackService.this;
@@ -223,50 +269,5 @@ public class PlaybackService extends Service
                 Log.e(TAG, "onReceive: can't understand action \"" + action + "\".");
             }
         }
-
-        private void previous() {
-            //check duration of song
-            if(player.getCurrentPosition() < 1000){ //less than a second
-                player.seekTo(0);
-            } else {
-                songPosition--;
-                if(songPosition < 0){
-                    songPosition = songs.size() - 1; // wrap the list?
-                }
-                setSong(songPosition);
-                playSong();
-            }
-
-        }
-
-        private void next() {
-            songPosition++;
-            if(songPosition >= songs.size()){
-                songPosition = 0;
-            }
-            setSong(songPosition);
-            playSong();
-
-        }
-
-        private void stop(Intent intent) {
-            int id = intent.getIntExtra("id",Integer.MIN_VALUE);
-            player.stop();
-            nm.cancel(id);
-
-        }
-
-        private void playPause() {
-            if(player.isPlaying()){
-                remoteViews.setImageViewResource(R.id.btn_playpause, R.drawable.ic_play_arrow_black_24dp);
-                player.pause();
-            } else {
-                remoteViews.setImageViewResource(R.id.btn_playpause, R.drawable.ic_pause_black_24dp);
-                player.start();
-            }
-        }
-
-
-
     }
 }

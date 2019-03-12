@@ -1,6 +1,7 @@
 package smd.ufc.br.easycontext;
 
 import android.location.Location;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.awareness.state.TimeIntervals;
 import com.google.android.gms.awareness.state.Weather;
@@ -10,12 +11,15 @@ import com.google.android.gms.location.places.PlaceLikelihood;
 import java.io.Serializable;
 import java.util.List;
 
+import smd.ufc.br.easycontext.persistance.entities.DetectedActivityDefinition;
+import smd.ufc.br.easycontext.persistance.entities.LocationDefinition;
+import smd.ufc.br.easycontext.persistance.entities.TimeIntervalDefinition;
+import smd.ufc.br.easycontext.persistance.entities.WeatherDefinition;
+
 /**
  * CurrentContext is the current context that the device is at.
  */
 public class CurrentContext implements Serializable {
-
-
 
 
     private Weather weather;
@@ -23,6 +27,8 @@ public class CurrentContext implements Serializable {
     private Location location;
     private PlaceLikelihood placeLikelihood;
     private DetectedActivity mostProbableActivity;
+    private List<DetectedActivity> detectedActivities;
+
 
     public List<DetectedActivity> getDetectedActivities() {
         return detectedActivities;
@@ -32,8 +38,6 @@ public class CurrentContext implements Serializable {
         this.detectedActivities = detectedActivities;
         return this;
     }
-
-    private List<DetectedActivity> detectedActivities;
 
     CurrentContext setWeather(Weather weather) {
         this.weather = weather;
@@ -92,7 +96,7 @@ public class CurrentContext implements Serializable {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Weather: ");
-        if(weather == null)
+        if (weather == null)
             builder.append("null");
         else
             builder.append(weather.toString());
@@ -127,4 +131,6 @@ public class CurrentContext implements Serializable {
         }
         return builder.toString();
     }
+
+
 }

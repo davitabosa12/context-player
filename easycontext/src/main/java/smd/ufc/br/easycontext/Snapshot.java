@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
@@ -139,6 +140,7 @@ public class Snapshot {
                     break;
                 case DETECTED_ACTIVITY:
                     Task daTask = updateDetectedActivity();
+
                     tasks.add(daTask);
                     break;
                 case PLACE_LIKELIHOOD:
@@ -151,8 +153,18 @@ public class Snapshot {
         Tasks.whenAllComplete(c).addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
             @Override
             public void onComplete(@NonNull Task<List<Task<?>>> task) {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "onComplete: Task is successful");
+                } else{
+
+                    Log.e(TAG, "onComplete: task not successful", task.getException());
+                }
                 for (Task t :
                         task.getResult()) {
+                    if(!t.isSuccessful()){
+                        Log.e(TAG, "onComplete: task failed!", t.getException());
+                        continue;
+                    }
                     if(t.getResult() instanceof WeatherResponse){
                         WeatherResponse response = (WeatherResponse) t.getResult();
                         currentContext.setWeather(response.getWeather());
@@ -168,8 +180,11 @@ public class Snapshot {
                         currentContext.setDetectedActivities(response.getActivityRecognitionResult().getProbableActivities());
                     }
                 }
+                checkForInconsistencies();
                 callback.onContextUpdate(currentContext);
             }
+
+
         });
 
         if (callback == null) {
@@ -179,6 +194,10 @@ public class Snapshot {
 
             //callback.onContextUpdate(currentContext);
         }
+
+    }
+
+    private void checkForInconsistencies() {
 
     }
 
