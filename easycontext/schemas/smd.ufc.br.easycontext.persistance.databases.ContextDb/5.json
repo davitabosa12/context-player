@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "9fb1fefd38c888b9033e435afd9abe8b",
+    "identityHash": "b942117d6b4b17b82b02dcae64492191",
     "entities": [
       {
         "tableName": "WeatherDefinition",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER NOT NULL, `temperature` REAL NOT NULL, `feelsLikeTemperature` REAL NOT NULL, `dewPoint` REAL NOT NULL, `humidity` INTEGER NOT NULL, `conditions` TEXT, PRIMARY KEY(`uid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `temperature` REAL NOT NULL, `feelsLikeTemperature` REAL NOT NULL, `dewPoint` REAL NOT NULL, `humidity` INTEGER NOT NULL, `conditions` TEXT)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -49,14 +49,14 @@
           "columnNames": [
             "uid"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
         "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "DetectedActivityDefinition",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `activityType` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `activityTypes` TEXT)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -65,10 +65,10 @@
             "notNull": true
           },
           {
-            "fieldPath": "activityType",
-            "columnName": "activityType",
-            "affinity": "INTEGER",
-            "notNull": true
+            "fieldPath": "activityTypes",
+            "columnName": "activityTypes",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -147,7 +147,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9fb1fefd38c888b9033e435afd9abe8b\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b942117d6b4b17b82b02dcae64492191\")"
     ]
   }
 }

@@ -32,7 +32,7 @@ public class Snapshot {
     public static final int LOCATION = 688;
     public static final int PLACE_LIKELIHOOD = 668;
     public static final int DETECTED_ACTIVITY = 452;
-    private static final int[] ALL_PROVIDERS = {WEATHER, TIME_INTERVAL, LOCATION, PLACE_LIKELIHOOD, DETECTED_ACTIVITY};
+    public static final int[] ALL_PROVIDERS = {WEATHER, TIME_INTERVAL, LOCATION, PLACE_LIKELIHOOD, DETECTED_ACTIVITY};
     private static final String TAG = "Snapshot";
     private SnapshotClient client;
     private static Snapshot instance;

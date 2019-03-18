@@ -57,7 +57,7 @@ public class FloatStatistics {
     }
 
     public float getAverage(){
-        if(count < 0) return 0.0f;
+        if(count <= 0) return 0.0f;
         return sum/count;
     }
 }

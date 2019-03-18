@@ -7,6 +7,7 @@ import java.util.List;
 
 import smd.ufc.br.easycontext.ContextDefinition;
 import smd.ufc.br.easycontext.CurrentContext;
+import smd.ufc.br.easycontext.math.FloatStatistics;
 
 /**
  * A packet class to calculate the context confidence of the playlist
@@ -45,11 +46,11 @@ public class PlaylistContexts implements Serializable {
         if (definitions == null) {
             return 0;
         }
-        float result = 0.0f;
+        FloatStatistics statistics = new FloatStatistics();
         for(ContextDefinition definition : definitions){
             if(definition== null) continue;
-            result += definition.calculateConfidence(currentContext);
+            statistics.accept(definition.calculateConfidence(currentContext));
         }
-        return result;
+        return statistics.getAverage();
     }
 }

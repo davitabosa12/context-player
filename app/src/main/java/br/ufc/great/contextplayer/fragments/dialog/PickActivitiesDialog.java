@@ -63,7 +63,7 @@ public class PickActivitiesDialog extends DialogFragment implements DialogInterf
                 definition = new DetectedActivityDefinition();
                 for(int index = 0; index < mItems.size(); index++){
                     if(mItems.valueAt(index)){
-                        definition.setActivityTypes(index + 1);
+                        definition.addActivityTypes(index + 1);
                     }
                 }
                 mListener.onActivitiesPick(definition);

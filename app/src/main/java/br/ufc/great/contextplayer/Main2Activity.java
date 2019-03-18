@@ -224,6 +224,11 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(musicConnection);
+    }
 
     @Override
     public void onClick(View view) {

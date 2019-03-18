@@ -110,6 +110,9 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         ContextDb database = ContextDb.getInstance(this, "new_database");
         database.detectedActivityDAO().getById(3);
+        database.locationDAO().getById(0);
+        database.timeIntervalDAO().getById(0);
+        database.weatherDAO().getById(0);
 //        ContextDb db2 = Room.databaseBuilder(this, ContextDb.class, "new_database").build();
 //        //Cursor c = db2.query("SELECT * FROM " + Room.MASTER_TABLE_NAME, null);
 //        Cursor c = db2.query("SELECT * FROM " + Room.MASTER_TABLE_NAME, null);

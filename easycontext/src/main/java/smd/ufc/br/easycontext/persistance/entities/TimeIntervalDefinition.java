@@ -38,6 +38,9 @@ public class TimeIntervalDefinition implements TimeIntervals, ContextDefinition 
     @Ignore
     public static final int TIME_INTERVAL_ANY = 8;
 
+    @Ignore
+    private boolean isDirty = false;
+
 
 
     @PrimaryKey(autoGenerate = true)
@@ -67,6 +70,10 @@ public class TimeIntervalDefinition implements TimeIntervals, ContextDefinition 
     }
 
     public TimeIntervalDefinition addTimeInterval(int interval){
+        if(!isDirty){
+            this.timeIntervals = new int[0];
+            isDirty = true;
+        }
         this.timeIntervals = Arrays.copyOf(timeIntervals, timeIntervals.length + 1);
         timeIntervals[timeIntervals.length - 1] = interval;
         return this;

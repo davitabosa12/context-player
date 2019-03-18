@@ -8,6 +8,7 @@ import android.arch.persistence.room.TypeConverters;
 
 import com.google.android.gms.location.DetectedActivity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import smd.ufc.br.easycontext.ContextDefinition;
@@ -37,6 +38,11 @@ public class DetectedActivityDefinition implements ContextDefinition {
     public static final int RUNNING = 8;
     @Ignore
     public static final int ANY = 9;
+
+
+
+    @Ignore
+    private boolean isDirty = false;
 
 
 
@@ -109,4 +115,16 @@ public class DetectedActivityDefinition implements ContextDefinition {
     }
 
 
+    public void addActivityTypes(int i) {
+
+        if(!isDirty){
+            isDirty = true;
+            this.activityTypes = new int[0];
+        }
+
+        int[] list = Arrays.copyOf(activityTypes, activityTypes.length + 1);
+        list[list.length - 1] = i;
+        activityTypes = list;
+
+    }
 }

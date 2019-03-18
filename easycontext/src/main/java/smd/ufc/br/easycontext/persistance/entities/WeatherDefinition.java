@@ -44,9 +44,11 @@ public class WeatherDefinition implements Weather, ContextDefinition  {
     public static final int CONDITION_STORMY = 8;
     @Ignore
     public static final int CONDITION_WINDY = 9;
+    @Ignore
+    private boolean isDirty = false;
 
     // --------------------- FIELDS ------------------------ //
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int uid;
 
     @ColumnInfo
@@ -129,35 +131,25 @@ public class WeatherDefinition implements Weather, ContextDefinition  {
         return dewPoint;
     }
 
-    public WeatherDefinition setTemperature(float temperature) {
+    public void setTemperature(float temperature) {
         this.temperature = temperature;
-        return this;
     }
 
-    public WeatherDefinition setFeelsLikeTemperature(float feelsLikeTemperature) {
+    public void setFeelsLikeTemperature(float feelsLikeTemperature) {
         this.feelsLikeTemperature = feelsLikeTemperature;
-        return this;
     }
 
-    public WeatherDefinition setDewPoint(float dewPoint) {
+    public void setDewPoint(float dewPoint) {
         this.dewPoint = dewPoint;
-        return this;
     }
 
-    public WeatherDefinition setHumidity(int humidity) {
+    public void setHumidity(int humidity) {
         this.humidity = humidity;
-        return this;
     }
 
-    public WeatherDefinition setConditions(int[] conditions) {
+    public void setConditions(int[] conditions) {
         this.conditions = conditions;
-        return this;
     }
-
-
-
-
-
 
     @Override
     public float getTemperature(int i) {
@@ -185,7 +177,13 @@ public class WeatherDefinition implements Weather, ContextDefinition  {
     }
 
 
+
+
     public WeatherDefinition addCondition(int condition){
+        if(!isDirty){
+            isDirty = true;
+            this.conditions = new int[0];
+        }
 
         conditions = Arrays.copyOf(conditions, conditions.length + 1);
         conditions[conditions.length -1] = condition;

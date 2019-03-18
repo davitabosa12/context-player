@@ -13,9 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import br.ufc.great.contextplayer.EditarPlaylistActivity;
 import br.ufc.great.contextplayer.R;
+import smd.ufc.br.easycontext.CurrentContext;
+import smd.ufc.br.easycontext.Snapshot;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,13 +28,12 @@ import br.ufc.great.contextplayer.R;
  * Use the {@link MainScreenFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainScreenFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener {
+public class MainScreenFragment extends Fragment implements Snapshot.OnContextUpdate {
 
 
-    private OnFragmentInteractionListener mListener;
-    private Button btnTreino, btnChuvoso, btnNuvens, btnCarro, btnEnsolarado;
-    private TableRow trRecomendacao;
     private static String TAG = "MainScreenFragment";
+    Snapshot snapshot;
+    private TextView txvContext;
 
     public MainScreenFragment() {
         // Required empty public constructor
@@ -53,6 +55,8 @@ public class MainScreenFragment extends Fragment implements View.OnLongClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        snapshot = Snapshot.getInstance(getContext());
+        snapshot.setCallback(this);
 
     }
 
@@ -61,87 +65,31 @@ public class MainScreenFragment extends Fragment implements View.OnLongClickList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_main_screen, container, false);
-       //find buttons
-       btnTreino = rootview.findViewById(R.id.btn_treino);
-       btnCarro = rootview.findViewById(R.id.btn_no_carro);
-       btnChuvoso = rootview.findViewById(R.id.btn_chuvoso);
-       btnEnsolarado = rootview.findViewById(R.id.btn_ensolarado);
-       btnNuvens = rootview.findViewById(R.id.btn_nuvens);
-       trRecomendacao = rootview.findViewById(R.id.tr_playlist_recomendada);
-       setUpButtonListeners();
+       txvContext = rootview.findViewById(R.id.txv_context);
+       snapshot.updateContext(Snapshot.ALL_PROVIDERS);
        return rootview;
     }
 
-    private void setUpButtonListeners() {
-        btnTreino.setOnLongClickListener(this);
-        btnCarro.setOnLongClickListener(this);
-        btnChuvoso.setOnLongClickListener(this);
-        btnEnsolarado.setOnLongClickListener(this);
-        btnNuvens.setOnLongClickListener(this);
-
-        btnTreino.setOnClickListener(this);
-        btnCarro.setOnClickListener(this);
-        btnChuvoso.setOnClickListener(this);
-        btnEnsolarado.setOnClickListener(this);
-        btnNuvens.setOnClickListener(this);
-    }
 
     @Override
     public void onInflate(Context context, AttributeSet attrs, Bundle savedInstanceState) {
+
         super.onInflate(context, attrs, savedInstanceState);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
-    public boolean onLongClick(View view) {
-        Intent i = new Intent(getContext(), EditarPlaylistActivity.class);
-        switch(view.getId()){
-            case R.id.btn_chuvoso:
-                i.putExtra("playlist", "chuvoso");
-                startActivity(i);
-                break;
-            case R.id.btn_ensolarado:
-                i.putExtra("playlist", "ensolarado");
-                startActivity(i);
-                break;
-            case R.id.btn_no_carro:
-                i.putExtra("playlist", "no_carro");
-                startActivity(i);
-                break;
-            case R.id.btn_nuvens:
-                i.putExtra("playlist", "nuvens");
-                startActivity(i);
-                break;
-            case R.id.btn_treino:
-                i.putExtra("playlist", "treino");
-                startActivity(i);
-                break;
-        }
-        return true;
-    }
-
-    @Override
-    public void onClick(View view) {
-        if(mListener == null){
-            Log.e(TAG, "onClick: activity doesn't implement OnFragmentInteractionListener ", new NullPointerException());
-        }
-       mListener.onFragmentInteraction(this, view);
-
+    public void onContextUpdate(CurrentContext currentContext) {
+        txvContext.setText(currentContext.toString());
     }
 }

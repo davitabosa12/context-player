@@ -50,13 +50,13 @@ public class LocationDefinition implements ContextDefinition {
      */
     public LocationDefinition(){
         this.location = new Location("user-defined");
-        this.latitude = Float.NaN;
-        this.longitude = Float.NaN;
-        this.maxDistance = Float.NaN;
+        this.latitude = -200.0f;
+        this.longitude = -200.0f;
+        this.maxDistance = Float.MIN_VALUE;
     }
 
     public Location getLocation() {
-        if(Float.isNaN(latitude) || Float.isNaN(longitude))
+        if(!isLatitudeValid(latitude) || !isLongitudeValid(longitude))
             return null;
 
         location.setLatitude(latitude);
@@ -73,9 +73,9 @@ public class LocationDefinition implements ContextDefinition {
         return maxDistance;
     }
 
-    public LocationDefinition setMaxDistance(float maxDistance) {
+    public void setMaxDistance(float maxDistance) {
         this.maxDistance = maxDistance;
-        return this;
+
     }
     //GETTERS SETTERS
     public int getUid() {
@@ -105,7 +105,7 @@ public class LocationDefinition implements ContextDefinition {
 
     @Override
     public float calculateConfidence(CurrentContext currentContext) {
-        if(Float.isNaN(this.latitude) || Float.isNaN(this.longitude) || Float.isNaN(this.maxDistance)){
+        if(isLatitudeValid(this.latitude) || isLongitudeValid(longitude) || this.maxDistance < 0){
             return 0.5f; //the default value for any location.
         }
         Location other = currentContext.getLocation();
@@ -115,5 +115,12 @@ public class LocationDefinition implements ContextDefinition {
         if(distance > maxDistance)
             return 0;
         return Maths.normalize(distance, 0, maxDistance);
+    }
+
+    private boolean isLatitudeValid(float latitude){
+        return -90 <= latitude && latitude <= 90;
+    }
+    private boolean isLongitudeValid(float longitude){
+        return -180 <= longitude && longitude <= 180;
     }
 }
