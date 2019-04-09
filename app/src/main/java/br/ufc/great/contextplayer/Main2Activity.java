@@ -28,6 +28,8 @@ import android.view.View;
 
 import com.google.android.gms.awareness.Awareness;
 import com.google.android.gms.awareness.SnapshotClient;
+import com.google.android.gms.awareness.fence.AwarenessFence;
+import com.google.android.gms.awareness.fence.FenceUpdateRequest;
 import com.google.android.gms.awareness.snapshot.TimeIntervalsResponse;
 import com.google.android.gms.awareness.state.TimeIntervals;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,6 +41,9 @@ import br.ufc.great.contextplayer.model.Playlist;
 import br.ufc.great.contextplayer.model.PlaylistDAO;
 import br.ufc.great.contextplayer.services.PlaybackService;
 import smd.ufc.br.easycontext.CurrentContext;
+import smd.ufc.br.easycontext.Fence;
+import smd.ufc.br.easycontext.HeadphoneFence;
+import smd.ufc.br.easycontext.HeadphoneMethod;
 import smd.ufc.br.easycontext.Snapshot;
 
 
@@ -109,6 +114,7 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         fabPlaylist = findViewById(R.id.fab_new_playlist);
         fabPlaylist.setOnClickListener(this);
         registerReceiver(playlistReceiver, new IntentFilter(PLAY_ACTION));
+        //check for fence registration
 
        /* try {
             //snapshot.updateContext(Snapshot.WEATHER, Snapshot.TIME_INTERVAL, Snapshot.DETECTED_ACTIVITY);

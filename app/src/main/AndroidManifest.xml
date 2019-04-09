@@ -11,13 +11,12 @@
 
     <application
         android:allowBackup="false"
-        android:fullBackupOnly="false"
         android:fullBackupContent="false"
+        android:fullBackupOnly="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
@@ -59,9 +58,19 @@
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SelectContextActivity"
+        <activity
+            android:name=".SelectContextActivity"
             android:label="Select Context"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <receiver
+            android:name=".receiver.HeadphoneReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="contextplayer.HEADPHONE_CONNECTED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
