@@ -15,6 +15,12 @@ public class GeneralReceiver extends BroadcastReceiver {
 
         FenceState state = FenceState.extract(intent);
         String fenceName = state.getFenceKey();
+        if(intent.getBooleanExtra("survivor", false)){
+            Log.d(TAG, "onReceive: SURVIVED");
+        } else {
+            Log.d(TAG, "onReceive: is ded");
+
+        }
         Log.d(TAG, "onReceive: received update from fence \"" + fenceName +  "\"");
 
         //TODO: Redirect behavior to registered Actions

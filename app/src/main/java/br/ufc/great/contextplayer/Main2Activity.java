@@ -116,8 +116,12 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         fabPlaylist.setOnClickListener(this);
         registerReceiver(playlistReceiver, new IntentFilter(PLAY_ACTION));
         //check for fence registration
-        Fence headphone = new HeadphoneFence("headphone-fence", HeadphoneMethod.HEADPHONE_PLUGGING_IN, null, null);
-        Task t = FenceManager.getInstance(this).registerFence2(headphone);
+        HeadphoneFence headphoneFence = new HeadphoneFence.Builder()
+                .setName("headphone-fence")
+                .setAction(new ShowNotificationAction())
+                .pluggingIn()
+                .build();
+        Task t = FenceManager.getInstance(this).registerFence2(headphoneFence);
         t.addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(@NonNull Task task) {

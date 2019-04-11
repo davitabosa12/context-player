@@ -96,8 +96,6 @@ public class HeadphoneFence extends Fence {
                         numOfParameters++;
                     }
                 }
-
-
                 throw new IllegalArgumentException("HeadphoneFence method is not set. Please use one of the following available methods: " + sb.toString());
             }
             return headphoneFence;
