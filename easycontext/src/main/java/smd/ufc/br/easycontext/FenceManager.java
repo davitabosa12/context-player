@@ -83,6 +83,17 @@ public class FenceManager {
         }
 
     }
+
+    public Task registerFence2(Fence fence){
+        Intent i = new Intent(context, GeneralReceiver.class);
+        //pending intent to trigger GeneralReceiver
+        PendingIntent pi = PendingIntent.getBroadcast(context, new Random().nextInt(), i , PendingIntent.FLAG_CANCEL_CURRENT);
+        //register info to Awareness API
+        Task t = client.updateFences(new FenceUpdateRequest.Builder().addFence(fence.getName(), fence.getMethod(), pi).build());
+        return t;
+    }
+
+
     @Nullable
     public Task unregisterFence(final Fence fence){
         if(isFenceRegistered(fence)){

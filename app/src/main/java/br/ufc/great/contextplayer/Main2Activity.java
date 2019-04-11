@@ -42,6 +42,7 @@ import br.ufc.great.contextplayer.model.PlaylistDAO;
 import br.ufc.great.contextplayer.services.PlaybackService;
 import smd.ufc.br.easycontext.CurrentContext;
 import smd.ufc.br.easycontext.Fence;
+import smd.ufc.br.easycontext.FenceManager;
 import smd.ufc.br.easycontext.HeadphoneFence;
 import smd.ufc.br.easycontext.HeadphoneMethod;
 import smd.ufc.br.easycontext.Snapshot;
@@ -115,7 +116,18 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         fabPlaylist.setOnClickListener(this);
         registerReceiver(playlistReceiver, new IntentFilter(PLAY_ACTION));
         //check for fence registration
-
+        Fence headphone = new HeadphoneFence("headphone-fence", HeadphoneMethod.HEADPHONE_PLUGGING_IN, null, null);
+        Task t = FenceManager.getInstance(this).registerFence2(headphone);
+        t.addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "onComplete: fence registered successfully");
+                } else {
+                    Log.d(TAG, "onComplete: fail");
+                }
+            }
+        });
        /* try {
             //snapshot.updateContext(Snapshot.WEATHER, Snapshot.TIME_INTERVAL, Snapshot.DETECTED_ACTIVITY);
         } catch (InterruptedException e) {
