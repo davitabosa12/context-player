@@ -46,7 +46,41 @@ public abstract class Fence {
     private boolean validateMethods(){
         return true;
     }
-	public FenceAction getAction() {
+
+    public Fence setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public FenceType getType() {
+        return type;
+    }
+
+    public Fence setType(FenceType type) {
+        this.type = type;
+        return this;
+    }
+
+    public Fence setMethod(FenceMethod method) {
+        this.method = method;
+        return this;
+    }
+
+    public Fence setAction(FenceAction action) {
+        this.action = action;
+        return this;
+    }
+
+    public FenceParameter getParams() {
+        return params;
+    }
+
+    public Fence setParams(FenceParameter params) {
+        this.params = params;
+        return this;
+    }
+
+    public FenceAction getAction() {
 		return action;
 	}
 
