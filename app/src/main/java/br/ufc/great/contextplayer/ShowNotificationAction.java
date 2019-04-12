@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.google.android.gms.awareness.fence.FenceState;
 
-import smd.ufc.br.easycontext.FenceAction;
+import smd.ufc.br.easycontext.fence.FenceAction;
 
 public class ShowNotificationAction implements FenceAction {
     private final String TAG = "ShowNotificationAction";

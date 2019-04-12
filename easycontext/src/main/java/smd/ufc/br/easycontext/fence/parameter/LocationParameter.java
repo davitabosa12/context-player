@@ -1,4 +1,4 @@
-package smd.ufc.br.easycontext;
+package smd.ufc.br.easycontext.fence.parameter;
 
 /**
  * Created by davitabosa on 20/06/2018.
@@ -47,7 +47,7 @@ public class LocationParameter implements FenceParameter {
     }
 
 
-    static class Builder{
+    public static class Builder{
         private double latitude;
         private double longitude;
         private double radius;

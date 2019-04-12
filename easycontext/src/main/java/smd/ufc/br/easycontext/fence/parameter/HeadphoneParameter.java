@@ -1,4 +1,4 @@
-package smd.ufc.br.easycontext;
+package smd.ufc.br.easycontext.fence.parameter;
 
 import com.google.android.gms.awareness.state.HeadphoneState;
 

@@ -1,4 +1,4 @@
-package smd.ufc.br.easycontext;
+package smd.ufc.br.easycontext.fence.method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +7,7 @@ import java.util.Map;
  * Created by davitabosa on 13/08/2018.
  */
 
-public enum LocationMethod {
+public enum LocationMethod implements FenceMethod{
     LOCATION_ENTERING("ENTERING"),
     LOCATION_EXITING("EXITING"),
     LOCATION_IN("IN");

@@ -1,9 +1,17 @@
-package smd.ufc.br.easycontext;
+package smd.ufc.br.easycontext.fence;
 
 import com.google.android.gms.awareness.fence.AwarenessFence;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+
+import smd.ufc.br.easycontext.exception.ReflectionUtil;
+import smd.ufc.br.easycontext.exception.RuleNotProvidedException;
+import smd.ufc.br.easycontext.fence.method.FenceMethod;
+import smd.ufc.br.easycontext.fence.parameter.FenceParameter;
+import smd.ufc.br.easycontext.fence.type.FenceType;
+import smd.ufc.br.easycontext.fence.method.HeadphoneMethod;
+import smd.ufc.br.easycontext.fence.parameter.HeadphoneParameter;
+import smd.ufc.br.easycontext.exception.MethodMismatchException;
 
 /**
  * Created by davitabosa on 13/08/2018.
@@ -11,13 +19,37 @@ import java.lang.reflect.Parameter;
 
 public class HeadphoneFence extends Fence {
 
-    private final HeadphoneMethod method;
-    private final HeadphoneParameter params;
+    private HeadphoneMethod method;
+    private HeadphoneParameter params;
 
     public HeadphoneFence(String name, HeadphoneMethod method, FenceAction action, HeadphoneParameter params) {
         super(name, FenceType.HEADPHONE, action, params);
         this.method = method;
         this.params = params;
+    }
+
+    @Override
+    public void setMethod(FenceMethod method) {
+        if(method instanceof HeadphoneMethod){
+            this.method = (HeadphoneMethod) method;
+        } else {
+            throw new MethodMismatchException("Provided method is not of type HeadphoneMethod.");
+        }
+    }
+
+    @Override
+    public HeadphoneParameter getParams() {
+        return params;
+    }
+
+    @Override
+    public void setParams(FenceParameter params) {
+        if (params == null) {
+            this.params = null;
+        } else {
+
+            this.params = (HeadphoneParameter) params;
+        }
     }
 
     @Override
@@ -54,19 +86,19 @@ public class HeadphoneFence extends Fence {
         }
 
         public Builder pluggingIn(){
-            headphoneFence.setMethod(FenceMethod.HEADPHONE_PLUGGING_IN);
+            headphoneFence.setMethod(HeadphoneMethod.HEADPHONE_PLUGGING_IN);
             headphoneFence.setParams(null);
             return this;
         }
 
         public Builder unplugging(){
-            headphoneFence.setMethod(FenceMethod.HEADPHONE_UNPLUGGING);
+            headphoneFence.setMethod(HeadphoneMethod.HEADPHONE_UNPLUGGING);
             headphoneFence.setParams(null);
             return this;
 
         }
         public Builder during(int headphoneState){
-            headphoneFence.setMethod(FenceMethod.HEADPHONE_DURING);
+            headphoneFence.setMethod(HeadphoneMethod.HEADPHONE_DURING);
             headphoneFence.setParams(
                     new HeadphoneParameter.Builder()
                             .setHeadphoneState(headphoneState) //set headphone state
@@ -82,21 +114,8 @@ public class HeadphoneFence extends Fence {
                 throw new IllegalArgumentException("HeadphoneFence action is not set. Please use Builder.setAction()");
             }
             if(headphoneFence.getMethod() == null){
-                StringBuilder sb = new StringBuilder();
-                Class<Builder> builderClass = Builder.class;
-                for(Method method : builderClass.getDeclaredMethods()){
-                    sb.append(method.getName());
-                    sb.append("(");
-                    int numOfParameters = 0;
-                    for(Class c : method.getParameterTypes()){
-
-                        sb.append(c.getName());
-                        if(numOfParameters > 0 && numOfParameters < method.getParameterTypes().length - 2)
-                            sb.append(", ");
-                        numOfParameters++;
-                    }
-                }
-                throw new IllegalArgumentException("HeadphoneFence method is not set. Please use one of the following available methods: " + sb.toString());
+                String methods = ReflectionUtil.getMethodsFromClass(Builder.class);
+                throw new RuleNotProvidedException("HeadphoneFence rule is not set. Please use one of the following available methods: " + methods);
             }
             return headphoneFence;
         }

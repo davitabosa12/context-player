@@ -1,8 +1,14 @@
-package smd.ufc.br.easycontext;
+package smd.ufc.br.easycontext.fence;
 
 import android.annotation.SuppressLint;
 
 import com.google.android.gms.awareness.fence.AwarenessFence;
+
+import smd.ufc.br.easycontext.fence.method.FenceMethod;
+import smd.ufc.br.easycontext.fence.parameter.FenceParameter;
+import smd.ufc.br.easycontext.fence.type.FenceType;
+import smd.ufc.br.easycontext.fence.method.LocationMethod;
+import smd.ufc.br.easycontext.fence.parameter.LocationParameter;
 
 /**
  * Created by davitabosa on 13/08/2018.
@@ -10,13 +16,25 @@ import com.google.android.gms.awareness.fence.AwarenessFence;
 
 public class LocationFence extends Fence {
 
-    private final LocationMethod method;
-    private final LocationParameter params;
+    private LocationMethod method;
+    private LocationParameter params;
 
     public LocationFence(String name, LocationMethod method, FenceAction action, LocationParameter params) {
         super(name, FenceType.LOCATION, action, params);
         this.params = params;
         this.method = method;
+
+    }
+
+    @Override
+    public void setMethod(FenceMethod method) {
+        if(method instanceof LocationMethod){
+            this.method = (LocationMethod) method;
+        }
+    }
+
+    @Override
+    public void setParams(FenceParameter params) {
 
     }
 

@@ -13,6 +13,20 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import smd.ufc.br.easycontext.fence.DetectedActivityFence;
+import smd.ufc.br.easycontext.fence.Fence;
+import smd.ufc.br.easycontext.fence.FenceAction;
+import smd.ufc.br.easycontext.fence.HeadphoneFence;
+import smd.ufc.br.easycontext.fence.LocationFence;
+import smd.ufc.br.easycontext.fence.method.DAMethod;
+import smd.ufc.br.easycontext.fence.method.HeadphoneMethod;
+import smd.ufc.br.easycontext.fence.method.LocationMethod;
+import smd.ufc.br.easycontext.fence.parameter.DetectedActivityParameter;
+import smd.ufc.br.easycontext.fence.parameter.FenceParameter;
+import smd.ufc.br.easycontext.fence.parameter.HeadphoneParameter;
+import smd.ufc.br.easycontext.fence.parameter.LocationParameter;
+import smd.ufc.br.easycontext.fence.type.FenceType;
+
 /**
  * Created by davitabosa on 08/08/2018.
  */

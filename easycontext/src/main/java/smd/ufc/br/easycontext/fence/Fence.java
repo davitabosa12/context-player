@@ -1,6 +1,10 @@
-package smd.ufc.br.easycontext;
+package smd.ufc.br.easycontext.fence;
 
 import com.google.android.gms.awareness.fence.AwarenessFence;
+
+import smd.ufc.br.easycontext.fence.method.FenceMethod;
+import smd.ufc.br.easycontext.fence.parameter.FenceParameter;
+import smd.ufc.br.easycontext.fence.type.FenceType;
 
 public abstract class Fence {
     private String name;
@@ -61,10 +65,7 @@ public abstract class Fence {
         return this;
     }
 
-    public Fence setMethod(FenceMethod method) {
-        this.method = method;
-        return this;
-    }
+    public abstract void setMethod(FenceMethod method);
 
     public Fence setAction(FenceAction action) {
         this.action = action;
@@ -75,14 +76,11 @@ public abstract class Fence {
         return params;
     }
 
-    public Fence setParams(FenceParameter params) {
-        this.params = params;
-        return this;
-    }
-
     public FenceAction getAction() {
 		return action;
 	}
+
+    public abstract void setParams(FenceParameter params);
 
 
 	//@SuppressLint("MissingPermission")

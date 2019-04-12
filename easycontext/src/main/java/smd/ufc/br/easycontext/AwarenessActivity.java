@@ -2,6 +2,8 @@ package smd.ufc.br.easycontext;
 
 import java.util.ArrayList;
 
+import smd.ufc.br.easycontext.fence.Fence;
+
 /**
  * Created by davitabosa on 13/06/2018.
  */

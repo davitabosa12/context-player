@@ -2,7 +2,7 @@ package smd.ufc.br.easycontext;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import smd.ufc.br.easycontext.fence.HeadphoneFence;
 
 public class HeadphoneFenceTest {
     @Test(expected = Exception.class)

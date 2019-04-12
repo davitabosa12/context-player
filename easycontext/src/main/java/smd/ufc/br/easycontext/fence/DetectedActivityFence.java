@@ -1,7 +1,12 @@
-package smd.ufc.br.easycontext;
+package smd.ufc.br.easycontext.fence;
 
 import com.google.android.gms.awareness.fence.AwarenessFence;
-import com.google.android.gms.awareness.fence.HeadphoneFence;
+
+import smd.ufc.br.easycontext.fence.method.DAMethod;
+import smd.ufc.br.easycontext.fence.parameter.DetectedActivityParameter;
+import smd.ufc.br.easycontext.fence.method.FenceMethod;
+import smd.ufc.br.easycontext.fence.parameter.FenceParameter;
+import smd.ufc.br.easycontext.fence.type.FenceType;
 
 /**
  * Created by davitabosa on 13/08/2018.
@@ -30,6 +35,18 @@ public class DetectedActivityFence extends Fence {
         this.method = method;
     }
 
+
+    @Override
+    public void setMethod(FenceMethod method) {
+        if(method instanceof DAMethod){
+
+        }
+    }
+
+    @Override
+    public void setParams(FenceParameter params) {
+
+    }
 
     @Override
     public AwarenessFence getMethod() {

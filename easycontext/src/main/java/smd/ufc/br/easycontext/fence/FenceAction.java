@@ -1,4 +1,4 @@
-package smd.ufc.br.easycontext;
+package smd.ufc.br.easycontext.fence;
 
 import android.content.Context;
 

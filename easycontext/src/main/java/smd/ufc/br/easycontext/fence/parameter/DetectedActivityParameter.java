@@ -1,8 +1,10 @@
-package smd.ufc.br.easycontext;
+package smd.ufc.br.easycontext.fence.parameter;
 
 import android.util.Log;
 
 import java.util.ArrayList;
+
+import smd.ufc.br.easycontext.fence.DetectedActivityFence;
 
 /**
  * Created by davitabosa on 18/06/2018.

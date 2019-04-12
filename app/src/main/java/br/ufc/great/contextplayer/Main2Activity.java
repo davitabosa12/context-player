@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,12 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 
-import com.google.android.gms.awareness.Awareness;
-import com.google.android.gms.awareness.SnapshotClient;
-import com.google.android.gms.awareness.fence.AwarenessFence;
-import com.google.android.gms.awareness.fence.FenceUpdateRequest;
-import com.google.android.gms.awareness.snapshot.TimeIntervalsResponse;
-import com.google.android.gms.awareness.state.TimeIntervals;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -40,12 +32,8 @@ import br.ufc.great.contextplayer.fragments.dialog.CreatePlaylistDialog;
 import br.ufc.great.contextplayer.model.Playlist;
 import br.ufc.great.contextplayer.model.PlaylistDAO;
 import br.ufc.great.contextplayer.services.PlaybackService;
-import smd.ufc.br.easycontext.CurrentContext;
-import smd.ufc.br.easycontext.Fence;
-import smd.ufc.br.easycontext.FenceManager;
-import smd.ufc.br.easycontext.HeadphoneFence;
-import smd.ufc.br.easycontext.HeadphoneMethod;
-import smd.ufc.br.easycontext.Snapshot;
+import smd.ufc.br.easycontext.fence.FenceManager;
+import smd.ufc.br.easycontext.fence.HeadphoneFence;
 
 
 public class Main2Activity extends AppCompatActivity implements OnFragmentInteractionListener, View.OnClickListener {
@@ -132,11 +120,7 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
                 }
             }
         });
-       /* try {
-            //snapshot.updateContext(Snapshot.WEATHER, Snapshot.TIME_INTERVAL, Snapshot.DETECTED_ACTIVITY);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
+
 
     }
 

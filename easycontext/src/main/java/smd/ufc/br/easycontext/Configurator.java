@@ -14,6 +14,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import smd.ufc.br.easycontext.fence.Fence;
+import smd.ufc.br.easycontext.fence.FenceAction;
+import smd.ufc.br.easycontext.fence.FenceManager;
+
 public class Configurator {
     private Activity activity;
     private Service service;

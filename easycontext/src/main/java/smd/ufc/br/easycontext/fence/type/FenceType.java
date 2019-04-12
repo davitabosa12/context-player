@@ -1,4 +1,4 @@
-package smd.ufc.br.easycontext;
+package smd.ufc.br.easycontext.fence.type;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +12,9 @@ public enum FenceType {
 
 	LOCATION("Location"),
 	OR("or"),
-	AND("and");
+	AND("and"),
+	NOT("not"),
+	AGGREGATE("aggregate");
 	private static final Map<String, FenceType> map = new HashMap<>();
 	static {
 		for (FenceType en : values()) {

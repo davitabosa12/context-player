@@ -1,4 +1,4 @@
-package smd.ufc.br.easycontext;
+package smd.ufc.br.easycontext.fence;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
+import smd.ufc.br.easycontext.GeneralReceiver;
 
 /**
  * Created by davitabosa on 08/08/2018.
