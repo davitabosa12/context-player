@@ -88,7 +88,8 @@ public class FenceManager {
 
     public Task registerFence2(Fence fence){
         Intent i = new Intent(context, GeneralReceiver.class);
-        i.putExtra("survivor", true);
+        String actionName = fence.getAction().getClass().getName();
+        i.putExtra("actionName", actionName);
         //pending intent to trigger GeneralReceiver
         PendingIntent pi = PendingIntent.getBroadcast(context, new Random().nextInt(), i , PendingIntent.FLAG_CANCEL_CURRENT);
         //register info to Awareness API
