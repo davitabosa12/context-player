@@ -59,8 +59,10 @@ public class ShowNotificationAction implements FenceAction, Snapshot.OnContextUp
         for(PlaylistConfidence confidence : playlistConfidences){
             playlists.add(confidence.getPlaylist());
         }
-
-        pushNotification(playlistConfidences.get(0).getPlaylist());
+        if(playlists.size() > 0)
+            pushNotification(playlistConfidences.get(0).getPlaylist());
+        else
+            Log.d(TAG, "onContextUpdate: no playlists");
     }
 
     private void pushNotification(Playlist playlist) {
