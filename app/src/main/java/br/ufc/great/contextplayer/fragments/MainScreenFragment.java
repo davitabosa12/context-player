@@ -1,10 +1,13 @@
 package br.ufc.great.contextplayer.fragments;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,10 +18,16 @@ import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.android.gms.awareness.Awareness;
+import com.google.android.gms.awareness.SnapshotClient;
+import com.google.android.gms.awareness.snapshot.DetectedActivityResponse;
+import com.google.android.gms.awareness.snapshot.LocationResponse;
+import com.google.android.gms.awareness.snapshot.TimeIntervalsResponse;
+import com.google.android.gms.awareness.snapshot.WeatherResponse;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import br.ufc.great.contextplayer.EditarPlaylistActivity;
 import br.ufc.great.contextplayer.R;
-import smd.ufc.br.easycontext.CurrentContext;
-import smd.ufc.br.easycontext.Snapshot;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,12 +37,17 @@ import smd.ufc.br.easycontext.Snapshot;
  * Use the {@link MainScreenFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainScreenFragment extends Fragment implements Snapshot.OnContextUpdate {
+public class MainScreenFragment extends Fragment implements OnSuccessListener<WeatherResponse> {
 
 
     private static String TAG = "MainScreenFragment";
-    Snapshot snapshot;
     private TextView txvContext;
+    SnapshotClient snapshot;
+    WeatherResponse weatherResponse;
+    DetectedActivityResponse daResponse;
+    LocationResponse locationResponse;
+    TimeIntervalsResponse timeIntervalsResponse;
+
 
     public MainScreenFragment() {
         // Required empty public constructor
@@ -55,8 +69,8 @@ public class MainScreenFragment extends Fragment implements Snapshot.OnContextUp
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        snapshot = Snapshot.getInstance(getContext());
-        snapshot.setCallback(this);
+        snapshot = Awareness.getSnapshotClient(getContext());
+
 
     }
 
@@ -64,10 +78,10 @@ public class MainScreenFragment extends Fragment implements Snapshot.OnContextUp
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_main_screen, container, false);
-       txvContext = rootview.findViewById(R.id.txv_context);
-       snapshot.updateContext(Snapshot.ALL_PROVIDERS);
-       return rootview;
+        ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_main_screen, container, false);
+        txvContext = rootview.findViewById(R.id.txv_context);
+        snapshot.updateContext(Snapshot.ALL_PROVIDERS);
+        return rootview;
     }
 
 
@@ -88,8 +102,25 @@ public class MainScreenFragment extends Fragment implements Snapshot.OnContextUp
         super.onDetach();
     }
 
+
+    private void updateContext() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        snapshot.getWeather().addOnSuccessListener(this);
+
+        snapshot.getDetectedActivity().addOnSuccessListener(this);
+    }
+
     @Override
-    public void onContextUpdate(CurrentContext currentContext) {
-        txvContext.setText(currentContext.toString());
+    public void onSuccess(WeatherResponse weatherResponse) {
+        this.weatherResponse = weatherResponse;
     }
 }

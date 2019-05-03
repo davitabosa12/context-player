@@ -1,5 +1,6 @@
 package br.ufc.great.contextplayer;
 
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,6 +25,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 
+import com.google.android.gms.awareness.Awareness;
+import com.google.android.gms.awareness.FenceClient;
+import com.google.android.gms.awareness.fence.AwarenessFence;
+import com.google.android.gms.awareness.fence.FenceUpdateRequest;
+import com.google.android.gms.awareness.fence.HeadphoneFence;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -31,13 +37,14 @@ import br.ufc.great.contextplayer.fragments.OnFragmentInteractionListener;
 import br.ufc.great.contextplayer.fragments.dialog.CreatePlaylistDialog;
 import br.ufc.great.contextplayer.model.Playlist;
 import br.ufc.great.contextplayer.model.PlaylistDAO;
+import br.ufc.great.contextplayer.receiver.HeadphoneReceiver;
 import br.ufc.great.contextplayer.services.PlaybackService;
-import smd.ufc.br.easycontext.fence.FenceManager;
-import smd.ufc.br.easycontext.fence.HeadphoneFence;
 
 
 public class Main2Activity extends AppCompatActivity implements OnFragmentInteractionListener, View.OnClickListener {
 
+    private static final int HEADPHONE_REQUEST_CODE = 951;
+    private static final String HANDLE_HEADPHONE_CONNECTED = "headphone-connected";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -103,13 +110,16 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
         fabPlaylist = findViewById(R.id.fab_new_playlist);
         fabPlaylist.setOnClickListener(this);
         registerReceiver(playlistReceiver, new IntentFilter(PLAY_ACTION));
-        //check for fence registration
-        HeadphoneFence headphoneFence = new HeadphoneFence.Builder()
-                .setName("headphone-fence")
-                .setAction(new ShowNotificationAction())
-                .pluggingIn()
-                .build();
-        Task t = FenceManager.getInstance(this).registerFence2(headphoneFence);
+
+        //register headphoneReceiver
+        registerReceiver(new HeadphoneReceiver(), new IntentFilter(HANDLE_HEADPHONE_CONNECTED));
+        AwarenessFence headphoneFence = HeadphoneFence.pluggingIn();
+        FenceClient client = Awareness.getFenceClient(this);
+        Task t = client.updateFences(new FenceUpdateRequest.Builder()
+                .addFence("headphone-fence", headphoneFence,
+                        PendingIntent.getBroadcast(this, HEADPHONE_REQUEST_CODE,
+                                new Intent(HANDLE_HEADPHONE_CONNECTED), PendingIntent.FLAG_CANCEL_CURRENT))
+                .build());
         t.addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(@NonNull Task task) {
