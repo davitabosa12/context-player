@@ -1,4 +1,4 @@
-package br.ufc.great.contextplayer;
+/*package br.ufc.great.contextplayer;
 
 import android.content.Context;
 import android.util.Log;
@@ -15,3 +15,4 @@ public class ShowNotificationAction implements FenceAction {
         //TODO: push notification
     }
 }
+*/

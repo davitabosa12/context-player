@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.google.android.gms.awareness.SnapshotClient;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,8 +32,6 @@ import br.ufc.great.contextplayer.model.PlaylistConfidence;
 import br.ufc.great.contextplayer.model.PlaylistContexts;
 import br.ufc.great.contextplayer.model.PlaylistDAO;
 import br.ufc.great.contextplayer.views.PlaylistBigCard;
-import smd.ufc.br.easycontext.CurrentContext;
-import smd.ufc.br.easycontext.Snapshot;
 
 import static br.ufc.great.contextplayer.Main2Activity.PLAY_ACTION;
 
@@ -43,20 +43,20 @@ import static br.ufc.great.contextplayer.Main2Activity.PLAY_ACTION;
  * Use the {@link SelectPlaylistFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SelectPlaylistFragment extends Fragment implements Snapshot.OnContextUpdate, View.OnClickListener, View.OnLongClickListener {
+public class SelectPlaylistFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
 
     public static final String ACTION_UPDATE = "update_recalculate";
     private static final String  TAG = "SelectPlaylistFragment";
 
     private OnFragmentInteractionListener mListener;
-    private Snapshot snapshot;
+    private SnapshotClient snapshot;
     private List<Playlist> playlists;
     private List<PlaylistConfidence> playlistConfidences;
     private ScrollView mainLayout;
     private PlaylistBigCard mMostRecommended, mSecondRecommended, mThirdRecommended;
     private LinearLayout mFourthOnwards, mPreloader;
     private ConstraintLayout mNoPlaylists;
-    private CurrentContext mLastContext;
+    //private CurrentContext mLastContext;
 
     private BroadcastReceiver updateRecalculate = new BroadcastReceiver() {
         @Override

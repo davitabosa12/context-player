@@ -190,26 +190,7 @@ public class Main2Activity extends AppCompatActivity implements OnFragmentIntera
     @Override
     public void onFragmentInteraction(Fragment fragment, View view) {
         Playlist p = new Playlist();
-//        switch(view.getId()){
-//            case R.id.btn_chuvoso:
-//                p = new Playlist(getApplicationContext(), "chuvoso");
-//                break;
-//            case R.id.btn_ensolarado:
-//                p = new Playlist(getApplicationContext(), "ensolarado");
-//                break;
-//            case R.id.btn_no_carro:
-//                p = new Playlist(getApplicationContext(), "carro");
-//                break;
-//            case R.id.btn_nuvens:
-//                p = new Playlist(getApplicationContext(), "nuvens");
-//                break;
-//            case R.id.btn_treino:
-//                p = new Playlist(getApplicationContext(), "treino");
-//
-//                break;
-//            default:
-//                p = null;
-//        }
+
         musicService.addPlaylist(p.getSongs());
         musicService.setSong(0);
         musicService.playSong();

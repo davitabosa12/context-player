@@ -2,11 +2,9 @@ package br.ufc.great.contextplayer.fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
@@ -14,8 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.google.android.gms.awareness.Awareness;
@@ -24,9 +20,13 @@ import com.google.android.gms.awareness.snapshot.DetectedActivityResponse;
 import com.google.android.gms.awareness.snapshot.LocationResponse;
 import com.google.android.gms.awareness.snapshot.TimeIntervalsResponse;
 import com.google.android.gms.awareness.snapshot.WeatherResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 
-import br.ufc.great.contextplayer.EditarPlaylistActivity;
+import java.util.List;
+
 import br.ufc.great.contextplayer.R;
 
 /**
@@ -37,7 +37,7 @@ import br.ufc.great.contextplayer.R;
  * Use the {@link MainScreenFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainScreenFragment extends Fragment implements OnSuccessListener<WeatherResponse> {
+public class MainScreenFragment extends Fragment {
 
 
     private static String TAG = "MainScreenFragment";
@@ -80,7 +80,7 @@ public class MainScreenFragment extends Fragment implements OnSuccessListener<We
         // Inflate the layout for this fragment
         ViewGroup rootview = (ViewGroup) inflater.inflate(R.layout.fragment_main_screen, container, false);
         txvContext = rootview.findViewById(R.id.txv_context);
-        snapshot.updateContext(Snapshot.ALL_PROVIDERS);
+        updateContext();
         return rootview;
     }
 
@@ -104,7 +104,7 @@ public class MainScreenFragment extends Fragment implements OnSuccessListener<We
 
 
     private void updateContext() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -114,13 +114,53 @@ public class MainScreenFragment extends Fragment implements OnSuccessListener<We
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        snapshot.getWeather().addOnSuccessListener(this);
 
-        snapshot.getDetectedActivity().addOnSuccessListener(this);
+        Task weatherTask = snapshot.getWeather().addOnSuccessListener(new OnSuccessListener<WeatherResponse>() {
+            @Override
+            public void onSuccess(WeatherResponse response) {
+                 weatherResponse = response;
+            }
+        });
+
+
+        Task detectedActivityTask = snapshot.getDetectedActivity().addOnSuccessListener(new OnSuccessListener<DetectedActivityResponse>() {
+            @Override
+            public void onSuccess(DetectedActivityResponse response) {
+                daResponse = response;
+            }
+        });
+
+        Task locationTask = snapshot.getLocation().addOnSuccessListener(new OnSuccessListener<LocationResponse>() {
+            @Override
+            public void onSuccess(LocationResponse response) {
+                locationResponse = response;
+            }
+        });
+        Task timeIntervalsTask = snapshot.getTimeIntervals().addOnSuccessListener(new OnSuccessListener<TimeIntervalsResponse>() {
+            @Override
+            public void onSuccess(TimeIntervalsResponse response) {
+                timeIntervalsResponse = response;
+            }
+        });
+
+        Tasks.whenAllComplete(weatherTask, detectedActivityTask, locationTask, timeIntervalsTask)
+                .addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
+                    @Override
+                    public void onComplete(@NonNull Task<List<Task<?>>> task) {
+                        Log.d(TAG, "onComplete: update completed");
+                        afterUpdate();
+                    }
+                });
     }
 
-    @Override
-    public void onSuccess(WeatherResponse weatherResponse) {
-        this.weatherResponse = weatherResponse;
+    private void afterUpdate(){
+        Log.d(TAG, "afterUpdate: called");
+        StringBuilder sb = new StringBuilder();
+        sb.append("Weather: \n").append(weatherResponse.getWeather().toString());
+        sb.append("\nDetected activity: \n").append(daResponse.getActivityRecognitionResult().getMostProbableActivity().toString());
+        sb.append("\nLocation:\n").append(locationResponse.getLocation().toString());
+        sb.append("\nTime intervals:\n").append(timeIntervalsResponse.getTimeIntervals().toString());
+        txvContext.setText(sb.toString());
     }
+
 }
